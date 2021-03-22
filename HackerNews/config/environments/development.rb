@@ -1,7 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Allow connections to local server.
+  # Allow connections to local server. Línia afegida.
   config.hosts.clear
   
   # Settings specified here will take precedence over those in config/application.rb.
