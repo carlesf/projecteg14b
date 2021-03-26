@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_212605) do
+ActiveRecord::Schema.define(version: 2021_03_26_123230) do
 
   create_table "contributions", force: :cascade do |t|
-    t.string "title"
-    t.string "url"
-    t.text "text"
+    t.string "user"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "type"
+    t.text "content"
+    t.string "title"
   end
 
 end
