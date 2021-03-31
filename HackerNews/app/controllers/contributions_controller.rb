@@ -3,7 +3,7 @@ class ContributionsController < ApplicationController
 
   # GET /contributions or /contributions.json
   def index
-    @contributions = Contribution.all
+    @contributions = Contribution.all.order(created_at: :desc)
   end
 
   # GET /contributions/1 or /contributions/1.json
@@ -22,6 +22,11 @@ class ContributionsController < ApplicationController
   # POST /contributions or /contributions.json
   def create
     @contribution = Contribution.new(contribution_params)
+    if @contribution.url.empty?
+      @contribution.tipus = "ask"
+    else
+      @contribution.tipus = "url"
+    end
 
     respond_to do |format|
       if @contribution.save
