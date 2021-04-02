@@ -5,6 +5,10 @@ class ContributionsController < ApplicationController
   def index
     @contributions = Contribution.all.order(created_at: :desc)
   end
+  
+  def newest
+    @contributions = Contribution.all.order(created_at: :asc)
+  end
 
   # GET /contributions/1 or /contributions/1.json
   def show
