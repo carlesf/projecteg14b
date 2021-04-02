@@ -65,7 +65,7 @@
                     </td>
                     <td valign="top" class="votelinks">
                       <center>
-                        <a id='up_<%= contribution.id %>' onclick='return vote(event, this, "up")' href='contributions'>
+                        <a id='up_<%= contribution.id %>' method="put" onclick="return point_contribution_path(contribution);" href='contributions'>
                           <div class='votearrow' title='upvote'></div>
                         </a>
                       </center>
@@ -84,7 +84,7 @@
                   <tr>
                     <td colspan="2"></td>
                     <td class="subtext">
-                      <span class="score" id="score_<%= contribution.id %>">0 points</span> 
+                      <span class="score" id="score_<%= contribution.id %>"><%= contribution.points %> points</span> 
                       by
                       <a href="user?id=nicoburns" class="hnuser">default</a> 
                       <span class="age">
@@ -173,6 +173,8 @@
         <td><%= link_to 'Show', contribution %></td>
         <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
         <td><%= link_to 'Destroy', contribution, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'point', point_contribution_path(contribution), method: :put, :class => "votearrow"%></td>
+
       </tr>
     <% end %>
   </tbody>

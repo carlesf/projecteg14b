@@ -1,15 +1,23 @@
 class ContributionsController < ApplicationController
-  before_action :set_contribution, only: %i[ show edit update destroy ]
+  before_action :set_contribution, only: %i[ show edit update destroy point ]
 
   # GET /contributions or /contributions.json
   def index
-    @contributions = Contribution.all.order(created_at: :desc)
+    @contributions = Contribution.all.order(points: :desc)
   end
   
   def newest
     @contributions = Contribution.all.order(created_at: :desc)
   end
 
+  def point
+    @contribution.points += 1
+    @contribution.save
+    respond_to do |format|
+      format.html { redirect_to contributions_url }
+    end 
+  end
+  
   # GET /contributions/1 or /contributions/1.json
   def show
   end

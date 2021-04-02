@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     collection do
       get 'newest'
     end
+    put 'point', on: :member
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root 'contributions#index'
