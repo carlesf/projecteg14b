@@ -7,7 +7,7 @@ class ContributionsController < ApplicationController
   end
   
   def newest
-    @contributions = Contribution.all.order(created_at: :asc)
+    @contributions = Contribution.all.order(created_at: :desc)
   end
 
   # GET /contributions/1 or /contributions/1.json
@@ -37,8 +37,10 @@ class ContributionsController < ApplicationController
         format.html { redirect_to @contribution, notice: "Contribution was successfully created." }
         format.json { render :show, status: :created, location: @contribution }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @contribution.errors, status: :unprocessable_entity }
+        format.html { redirect_to Contribution.find_by(url: @contribution.url) }
+        format.json { render :show, location: @contribution }
+        # format.html { render :new, status: :unprocessable_entity }
+        # format.json { render json: @contribution.errors, status: :unprocessable_entity }
       end
     end
   end

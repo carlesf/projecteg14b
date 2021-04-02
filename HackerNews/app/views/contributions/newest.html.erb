@@ -57,48 +57,50 @@
 
               <% iteration = 0 %>
               <% @contributions.each do |contribution| %>
-                <% if (contribution.tipus == "url") %>
-                  <% iteration += 1 %>
-                  <tr class='athing' id=<%= contribution.id %>>
-                    <td align="right" valign="top" class="title">
-                      <span class="rank"><%= iteration %></span>
-                    </td>
-                    <td valign="top" class="votelinks">
-                      <center>
-                        <a id='up_<%= contribution.id %>' onclick='return vote(event, this, "up")' href='contributions'>
-                          <div class='votearrow' title='upvote'></div>
-                        </a>
-                      </center>
-                    </td>
-                    <td class="title">
-                      <a href=<%= contribution.url %> class="storylink"><%= contribution.title %></a>
-                      <span class="sitebit comhead"> 
-                      (
-                      <a href="from?site=googlesource.com">
-                        <span class="sitestr">googlesource.com</span>
+                <% iteration += 1 %>
+                <tr class='athing' id=<%= contribution.id %>>
+                  <td align="right" valign="top" class="title">
+                    <span class="rank"><%= iteration %></span>
+                  </td>
+                  <td valign="top" class="votelinks">
+                    <center>
+                      <a id='up_<%= contribution.id %>' onclick='return vote(event, this, "up")' href='contributions'>
+                        <div class='votearrow' title='upvote'></div>
                       </a>
-                      )
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2"></td>
-                    <td class="subtext">
-                      <span class="score" id="score_<%= contribution.id %>">0 points</span> 
-                      by
-                      <a href="user?id=nicoburns" class="hnuser">default</a> 
-                      <span class="age">
-                        <a href="contributions/<%= contribution.id %>"><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
-                      </span>
-                      <span id="unv_<%= contribution.id %>"></span> 
-                      |
-                      <a href="hide?id=26647981&amp;auth=8138ecc46f86f6de19fa94a2e49c6f894d05aa2f&amp;goto=news" onclick="return hidestory(event, this, 26647981)">hide</a>
-                      |
-                      <a href="contributions/<%= contribution.id %>">0&nbsp;comments</a>
-                    </td>
-                  </tr>
-                  <tr class="spacer" style="height:5px"></tr>
-                <% end %>
+                    </center>
+                  </td>
+                  <td class="title">
+                    <% if (contribution.tipus == "url") %>
+                      <a href=<%= contribution.url %> class="storylink"><%= contribution.title %></a>
+                    <% else %>
+                      <a href=<%= contribution.id %> class="storylink"><%= contribution.title %></a>
+                    <% end %>
+                    <span class="sitebit comhead"> 
+                    (
+                    <a href="from?site=googlesource.com">
+                      <span class="sitestr">googlesource.com</span>
+                    </a>
+                    )
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2"></td>
+                  <td class="subtext">
+                    <span class="score" id="score_<%= contribution.id %>">0 points</span> 
+                    by
+                    <a href="user?id=nicoburns" class="hnuser">default</a> 
+                    <span class="age">
+                      <a href=<%= contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
+                    </span>
+                    <span id="unv_<%= contribution.id %>"></span> 
+                    |
+                    <a href="hide?id=26647981&amp;auth=8138ecc46f86f6de19fa94a2e49c6f894d05aa2f&amp;goto=news" onclick="return hidestory(event, this, 26647981)">hide</a>
+                    |
+                    <a href=<%= contribution.id %>>0&nbsp;comments</a>
+                  </td>
+                </tr>
+                <tr class="spacer" style="height:5px"></tr>
               <% end %>
 
               <tr class="morespace" style="height:10px"></tr>
