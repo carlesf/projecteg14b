@@ -25,7 +25,7 @@
                     <b class="hnname">
                       <a href=<%= contributions_path %>>Hacker News</a>
                     </b>
-                    <a href="newest">new</a>
+                    <span class="topsel"><a href="newest">new</a></span>
                     | 
                     <a href="front">past</a> 
                     | 
@@ -42,6 +42,7 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
+                    <!-- USER, also el (1) pa que -->
                     <a id='me' href="contributions">default</a> (1) | 
                     <a id='logout' href="contributions">logout</a>
                   </span>
@@ -83,6 +84,7 @@
                     <% end %>
                     <span class="sitebit comhead"> 
                     (
+                    <!-- això fa que si es clica el link surten tots els "url" amb aquell link -->
                     <a href="from?site=googlesource.com">
                       <span class="sitestr">googlesource.com</span>
                     </a>
@@ -95,12 +97,14 @@
                   <td class="subtext">
                     <span class="score" id="score_<%= contribution.id %>"><%= contribution.points %> points</span> 
                     by
+                    <!-- USER -->
                     <a href="user?id=nicoburns" class="hnuser">default</a> 
                     <span class="age">
                       <a href=<%= contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
                     </span>
                     <span id="unv_<%= contribution.id %>"></span> 
                     |
+                    <!-- hide no tira (VOTE) -->
                     <a href="hide?id=26647981&amp;auth=8138ecc46f86f6de19fa94a2e49c6f894d05aa2f&amp;goto=news" onclick="return hidestory(event, this, 26647981)">hide</a>
                     |
                     <a href=<%= contribution.id %>>0&nbsp;comments</a>
@@ -109,6 +113,7 @@
                 <tr class="spacer" style="height:5px"></tr>
               <% end %>
 
+              <!-- MORE
               <tr class="morespace" style="height:10px"></tr>
               <tr>
                 <td colspan="2"></td>
@@ -116,10 +121,14 @@
                   <a href="news?p=2" class="morelink" rel="next">More</a>
                 </td>
               </tr>
+              -->
+              
             </table>
           </td>
         </tr>
         <tr>
+          <td bgcolor="#ff6600"></td>
+          <!-- AIXO SOBRA
           <td>
             <img src="s.gif" height="10" width="0">
             <table width="100%" cellspacing="0" cellpadding="1">
@@ -154,9 +163,11 @@
               </form>
             </center>
           </td>
+          -->
         </tr>
       </table>
     </center>
+    <!-- src? pa que-->
     <script type='text/javascript' src='hn.js?75MgWz1WB8f9o4gVrhqe'></script>
   </body>
 </html>
