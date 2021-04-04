@@ -43,6 +43,7 @@ class ContributionsController < ApplicationController
       @contribution.tipus = "ask"
     else
       @contribution.tipus = "url"
+      # Crear comment associat a @contribution: comment.text = text | comment.user = contribution.user
     end
 
     respond_to do |format|
@@ -50,7 +51,7 @@ class ContributionsController < ApplicationController
         format.html { redirect_to @contribution, notice: "Contribution was successfully created." }
         format.json { render :show, status: :created, location: @contribution }
       else
-        format.html { redirect_to Contribution.find_by(url: @contribution.url) }
+        format.html { redirect_to Contribution.find_by(url: @contribution.url), notice:"Contribution NOT created." }
         format.json { render :show, location: @contribution }
         # format.html { render :new, status: :unprocessable_entity }
         # format.json { render json: @contribution.errors, status: :unprocessable_entity }

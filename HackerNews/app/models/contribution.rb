@@ -1,3 +1,4 @@
 class Contribution < ApplicationRecord
-  validates :url, uniqueness: true
+  validates :title, length: {minimum: 1}
+  validates :url, :allow_blank => true, :uniqueness => true, :if => :url? 
 end
