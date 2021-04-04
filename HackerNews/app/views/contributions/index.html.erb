@@ -1,4 +1,4 @@
-<html lang="en" op="news">
+<html lang="en" op="contributions">
   <head>
     <meta name="referrer" content="origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,16 +26,20 @@
                       <a href=<%= contributions_path %>>Hacker News</a>
                     </b>
                     <a href=<%= newest_contributions_path %>>new</a>
+                    |
+                    <!-- aixo caldra arreglar-ho -->
+                    <a href="treads">threads</a>
                     | 
-                    <a href="front">past</a> 
+                    <b style="color:rgba(0,0,0,0.2)">past</b>
                     | 
-                    <a href="newcomments">comments</a> 
+                    <b style="color:rgba(0,0,0,0.2)">comments</b>
                     | 
+                    <!-- aixo caldra arreglar-ho -->
                     <a href="ask">ask</a> 
                     | 
-                    <a href="show">show</a> 
-                    | 
-                    <a href="jobs">jobs</a> 
+                    <b style="color:rgba(0,0,0,0.2)">show</b>
+                    |
+                    <b style="color:rgba(0,0,0,0.2)">jobs</b>
                     | 
                     <a href=<%= new_contribution_path %>>submit</a>            
                   </span>
@@ -81,9 +85,9 @@
                       <a href=<%= contribution.url %> class="storylink"><%= contribution.title %></a>
                       <span class="sitebit comhead"> 
                       (
-                      <!-- això fa que si es clica el link surten tots els "url" amb aquell link -->
+                      <!-- això fa que si es clica el link surten tots els "url" amb aquell link (FORM) -->
                       <a href="from?site=googlesource.com">
-                        <span class="sitestr">googlesource.com</span>
+                        <span class="sitestr"><%= contribution.url %></span>
                       </a>
                       )
                       </span>

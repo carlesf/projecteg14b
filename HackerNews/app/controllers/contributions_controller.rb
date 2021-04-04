@@ -14,6 +14,7 @@ class ContributionsController < ApplicationController
     @contribution.points += 1
     @contribution.save
     respond_to do |format|
+      # el redirect aquest s'ha de treure quan es faci el VOTE
       format.html { redirect_to contributions_url }
     end 
   end
@@ -38,6 +39,10 @@ class ContributionsController < ApplicationController
       @contribution.tipus = "ask"
     else
       @contribution.tipus = "url"
+    end
+    
+    if @contribution.tipus == "ask"
+      @contribution.url = ""
     end
 
     respond_to do |format|
