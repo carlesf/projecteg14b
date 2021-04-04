@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :contributions do
     collection do
       get 'newest'
+      get 'ask'
     end
     put 'point', on: :member
   end

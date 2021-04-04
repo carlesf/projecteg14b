@@ -1,11 +1,10 @@
-<html lang="en" op="contributions">
+<html lang="en" op="ask">
   <head>
     <meta name="referrer" content="origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheets" type="text/css" href="application.css">
     <link rel="shortcut icon" href="favicon.ico">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss">
-    <title>Hacker News</title>
+    <title>Ask | Hacker News</title>
   </head>
   
   <body>
@@ -34,7 +33,7 @@
                     | 
                     <b style="color:rgba(0,0,0,0.2)">comments</b>
                     | 
-                    <a href=<%= ask_contributions_path %>>ask</a> 
+                    <span class="topsel"><a href=<%= ask_contributions_path %>>ask</a></span>
                     | 
                     <b style="color:rgba(0,0,0,0.2)">show</b>
                     |
@@ -54,14 +53,14 @@
             </table>
           </td>
         </tr>
-        <tr id="pagespace" title="" style="height:10px"></tr>
+        <tr id="pagespace" title="Ask" style="height:10px"></tr>
         <tr>
           <td>
             <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
 
               <% iteration = 0 %>
               <% @contributions.each do |contribution| %>
-                <% if (contribution.tipus == "url") %>
+                <% if (contribution.tipus == "ask") %>
                   <% iteration += 1 %>
                   <tr class='athing' id=<%= contribution.id %>>
                     <td align="right" valign="top" class="title">
@@ -81,15 +80,7 @@
                       </center>
                     </td>
                     <td class="title">
-                      <a href=<%= contribution.url %> class="storylink"><%= contribution.title %></a>
-                      <span class="sitebit comhead"> 
-                      (
-                      <!-- això fa que si es clica el link surten tots els "url" amb aquell link (FORM) -->
-                      <a href="from?site=googlesource.com">
-                        <span class="sitestr"><%= contribution.url %></span>
-                      </a>
-                      )
-                      </span>
+                      <a href=<%= contribution.id %> class="storylink"><%= contribution.title %></a>
                     </td>
                   </tr>
                   <tr>
@@ -113,59 +104,12 @@
                   <tr class="spacer" style="height:5px"></tr>
                 <% end %>
               <% end %>
-
-              <!-- el MORE nomes peta -> no ens cal
-              <tr class="morespace" style="height:10px"></tr>
-              <tr>
-                <td colspan="2"></td>
-                <td class="title">
-                  <a href="news?p=2" class="morelink" rel="next">More</a>
-                </td>
-              </tr>
-              -->
               
             </table>
           </td>
         </tr>
         <tr>
           <td bgcolor="#ff6600"></td>
-          <!-- AIXO SOBRA
-          <td>
-            <img src="s.gif" height="10" width="0">
-            <table width="100%" cellspacing="0" cellpadding="1">
-              <tr>
-                <td bgcolor="#ff6600"></td>
-              </tr>
-            </table>
-            <br>
-            <center>
-              <span class="yclinks">
-                <a href="newsguidelines.html">Guidelines</a>
-                |
-                <a href="newsfaq.html">FAQ</a>
-                | 
-                <a href="lists">Lists</a>
-                | 
-                <a href="https://github.com/HackerNews/API">API</a>
-                | 
-                <a href="security.html">Security</a>
-                | 
-                <a href="http://www.ycombinator.com/legal/">Legal</a>
-                | 
-                <a href="http://www.ycombinator.com/apply/">Apply to YC</a>
-                | 
-                <a href="mailto:hn@ycombinator.com">Contact</a>
-              </span>
-              <br>
-              <br>
-              <form method="get" action="//hn.algolia.com/">
-                Search:
-                <input type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false">
-              </form>
-            </center>
-            
-          </td>
-          -->
         </tr>
       </table>
     </center>
@@ -173,34 +117,3 @@
     <script type='text/javascript' src='hn.js?75MgWz1WB8f9o4gVrhqe'></script>
   </body>
 </html>
-
-
-
-------
-<p id="notice"><%= notice %></p>
-
-<h1>Contributions</h1>
-
-<table>
-  
-
-  <tbody>
-    <% @contributions.each do |contribution| %>
-      <tr>
-        <td><%= contribution.title %></td>
-        <td><%= contribution.tipus %></td>
-        <td><%= contribution.url %></td>
-        <td><%= contribution.text %></td>
-        <td><%= link_to 'Show', contribution %></td>
-        <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
-        <td><%= link_to 'Destroy', contribution, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <td><%= link_to 'point', point_contribution_path(contribution), method: :put, :class => "votearrow"%></td>
-
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Contribution', new_contribution_path %>

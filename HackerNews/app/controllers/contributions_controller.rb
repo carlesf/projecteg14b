@@ -9,6 +9,10 @@ class ContributionsController < ApplicationController
   def newest
     @contributions = Contribution.all.order(created_at: :desc)
   end
+  
+  def ask
+    @contributions = Contribution.all.order(points: :desc)
+  end
 
   def point
     @contribution.points += 1
@@ -39,10 +43,6 @@ class ContributionsController < ApplicationController
       @contribution.tipus = "ask"
     else
       @contribution.tipus = "url"
-    end
-    
-    if @contribution.tipus == "ask"
-      @contribution.url = ""
     end
 
     respond_to do |format|
