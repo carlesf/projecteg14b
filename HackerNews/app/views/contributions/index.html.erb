@@ -65,9 +65,15 @@
                     </td>
                     <td valign="top" class="votelinks">
                       <center>
-                        <a id='up_<%= contribution.id %>' method="put" onclick="return point_contribution_path(contribution);" href='contributions'>
-                          <div class='votearrow' title='upvote'></div>
+                        
+                        <a id='up_<%= contribution.id %>'>
+                          
+                          <div class='votearrow' title='upvote'>
+                            <%= link_to 'aixoNoEsVeu', point_contribution_path(contribution), method: :put, :style => "opacity:0" %>
+                          </div>
+
                         </a>
+                        
                       </center>
                     </td>
                     <td class="title">
@@ -108,6 +114,7 @@
                   <a href="news?p=2" class="morelink" rel="next">More</a>
                 </td>
               </tr>
+              
             </table>
           </td>
         </tr>
