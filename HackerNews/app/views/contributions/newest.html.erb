@@ -71,7 +71,7 @@
                       <a id='up_<%= contribution.id %>'>
                         
                         <div class='votearrow' title='upvote'>
-                          <%= link_to 'aixoNoEsVeu', point_contribution_path(contribution), method: :put, :style => "opacity:0" %>
+                          <%= link_to '.', point_contribution_path(contribution, :view => "newest"), method: :put, :style => "opacity:0" %>
                         </div>
 
                       </a>

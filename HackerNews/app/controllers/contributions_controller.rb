@@ -18,8 +18,14 @@ class ContributionsController < ApplicationController
     @contribution.points += 1
     @contribution.save
     respond_to do |format|
-      # el redirect aquest s'ha de treure quan es faci el VOTE
-      format.html { redirect_to contributions_url }
+      @view = params[:view]
+      if @view == "index"
+        format.html { redirect_to contributions_url }
+      elsif @view == "newest" 
+        format.html { redirect_to newest_contributions_path }
+      elsif @view == "ask" 
+        format.html { redirect_to ask_contributions_path }
+      end
     end 
   end
   
