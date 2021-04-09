@@ -92,9 +92,6 @@
                     </span>
                     <span id="unv_<%= @contribution.id %>"></span> 
                     |
-                    <!-- hide no tira (VOTE) -->
-                    <a href="hide?id=26647981&amp;auth=8138ecc46f86f6de19fa94a2e49c6f894d05aa2f&amp;goto=news" onclick="return hidestory(event, this, 26647981)">hide</a>
-                    |
                     <!-- comments no tira  -->
                     <a href=<%= @contribution.id %>>0&nbsp;comments</a>
                   </td>
@@ -108,7 +105,7 @@
                 </tr>
                 <tr style="height:10px"></tr>
                 <tr>
-                  <td colspan="2"></td>
+                  <td colspan="1"></td>
                   <td>
                     <!-- COMMENT -->
                       <form method="post" action="comment"><input type="hidden" name="parent" value="26723110"><input type="hidden" name="goto" value="item?id=26723110"><input type="hidden" name="hmac" value="9db68b4645809ffa3db2efc6b01572801d6bb248"><textarea name="text" rows="6" cols="60"></textarea>
@@ -173,7 +170,7 @@
   </body>
   
   --------------------------------------------------------
-  
+ <!-- 
   <html lang="en" op="item">
     <head>
       <meta name="referrer" content="origin">
@@ -305,6 +302,6 @@
 </html>
   
 </html>
-
+-->
 
 
