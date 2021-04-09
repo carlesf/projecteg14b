@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :users
   resources :contributions do
     collection do
       get 'newest'
