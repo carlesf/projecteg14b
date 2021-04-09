@@ -20,7 +20,7 @@ class ContributionsController < ApplicationController
     respond_to do |format|
       @view = params[:view]
       if @view == "index"
-        format.html { redirect_to contributions_url }
+        format.html { redirect_to contributions_path }
       elsif @view == "newest" 
         format.html { redirect_to newest_contributions_path }
       elsif @view == "ask" 
