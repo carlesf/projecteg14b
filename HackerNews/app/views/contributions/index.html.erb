@@ -46,9 +46,23 @@
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
                     <!-- USER -->
-                     <%= button_to "Log in with Google", '/auth/google_oauth2'  %>
+                    <!--no tira encara-->
+                    <% if user_signed_in? %>
+                    
+                      <a id='me' href="contributions">default</a> | 
+                      <a id='logout' href="contributions">logout</a>
+                      <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>
+
+                      
+                      <%= link_to "Authenticate with Google", user_omniauth_authorize_path(:google_oauth2) %>
+                      
+                    <% else %>
+                      <%= button_to "login", '/auth/google_oauth2'  %>
+                    <% end %>
+                    
                     <a id='me' href="contributions">default</a> (1) | 
                     <a id='logout' href="contributions">logout</a>
+
                   </span>
                 </td>
               </tr>
