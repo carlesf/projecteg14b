@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   def omniauth
     user = User.from_omniauth(request.env['omniauth.auth'])
     if user.valid?
-      session[:user_id] = user.id #uid?
+      session[:user_id] = user.uid #uid?
       #redirect_to user_path(user)
       redirect_to contributions_path
     else
