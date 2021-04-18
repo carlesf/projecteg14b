@@ -46,10 +46,12 @@
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
                     <!-- USER -->
-                    <%= button_to "login", '/auth/google_oauth2'  %>
-                    <!-- href = show logged user -> user?... -->
-                    <a id='me' href="contributions">default</a> (1) | 
-                    <a id='logout' href="contributions">logout</a> 
+                    <% if logged_in? %>
+                      <a id='me' href="<%= users_path %>/<%= current_user.id %>"><%= current_user.email %></a> | 
+                      <a id='logout' href=<%= logout_path %>>logout</a> 
+                    <% else %>
+                      <%= button_to "login", '/auth/google_oauth2', :class => 'button'  %>
+                    <% end %>
 
                   </span>
                 </td>
@@ -205,4 +207,3 @@
 
 <%= link_to 'New Contribution', new_contribution_path %>
 <br>
-

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :users
   get '/auth/:provider/callback' => 'sessions#omniauth'
+  get 'logout' => 'sessions#destroy'
+
   resources :contributions do
     collection do
       get 'newest'
