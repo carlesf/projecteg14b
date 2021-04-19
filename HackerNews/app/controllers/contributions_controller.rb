@@ -47,6 +47,7 @@ class ContributionsController < ApplicationController
   def create
     @contribution = Contribution.new(contribution_params)
     @contribution.user = current_user.email
+    @contribution.user_id = current_user.id
     if @contribution.url.empty?
       @contribution.tipus = "ask"
     else

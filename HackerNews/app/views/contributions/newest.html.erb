@@ -107,7 +107,7 @@
                     <span class="score" id="score_<%= contribution.id %>"><%= contribution.points %> points</span> 
                     by
                     <!-- USER -->
-                    <a href="user?id=nicoburns" class="hnuser"><%= contribution.user %></a> 
+                    <a href="<%= users_path %>/<%= contribution.user_id %>" class="hnuser"><%= contribution.user %></a> 
                     <span class="age">
                       <a href=<%= contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
                     </span>

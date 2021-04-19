@@ -91,7 +91,7 @@
                     by
                     <!-- USER -->
                     <!-- no redirecciona on toca el user -->
-                    <a href=<%= users_path %>/<%= current_user.id %> class="hnuser"><%= @contribution.user %></a> 
+                    <a href="<%= users_path %>/<%= @contribution.user_id %>" class="hnuser"><%= @contribution.user %></a> 
                     <span class="age">
                       <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(@contribution.created_at).round) %></a>
                     </span>
