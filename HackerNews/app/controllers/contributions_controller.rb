@@ -3,7 +3,13 @@ class ContributionsController < ApplicationController
 
   # GET /contributions or /contributions.json
   def index
-    @contributions = Contribution.all.order(points: :desc)
+    
+    if params[:user_id]
+      @contributions = Contribution.where(user_id:params[:user_id]).order(created_at: :desc)
+    else 
+      @contributions = Contribution.where(tipus: 'url').order(points: :desc)
+    end
+    
   end
   
   def newest
@@ -13,7 +19,7 @@ class ContributionsController < ApplicationController
   def ask
     @contributions = Contribution.all.order(points: :desc)
   end
-
+  
   def point
     @contribution.points += 1
     @contribution.save

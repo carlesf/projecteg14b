@@ -84,14 +84,10 @@
                   </td>
                   <td class="title">
                     <% if (contribution.tipus == "url") %>
-                      <!-- SI ES CLICA EL LINK -> FORM  | SI ES CLICA EL TITLE -> OUTSIDE URL -->
                       <a href=<%= contribution.url %> class="storylink"><%= contribution.title %></a>
                       <span class="sitebit comhead"> 
                       (
-                        <!-- això fa que si es clica el link surten tots els "url" amb aquell link, pero form no esta encara-->
-                        <a href="from?site=googlesource.com">
-                          <span class="sitestr"><%= contribution.url %></span>
-                        </a>
+                      <span class="sitestr"><%= contribution.url %></span>
                       )
                       </span>
                       
@@ -118,63 +114,14 @@
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>
               <% end %>
-
-              <!-- MORE
-              <tr class="morespace" style="height:10px"></tr>
-              <tr>
-                <td colspan="2"></td>
-                <td class="title">
-                  <a href="news?p=2" class="morelink" rel="next">More</a>
-                </td>
-              </tr>
-              -->
-              
             </table>
           </td>
         </tr>
         <tr>
           <td bgcolor="#ff6600"></td>
-          <!-- AIXO SOBRA
-          <td>
-            <img src="s.gif" height="10" width="0">
-            <table width="100%" cellspacing="0" cellpadding="1">
-              <tr>
-                <td bgcolor="#ff6600"></td>
-              </tr>
-            </table>
-            <br>
-            <center>
-              <span class="yclinks">
-                <a href="newsguidelines.html">Guidelines</a>
-                |
-                <a href="newsfaq.html">FAQ</a>
-                | 
-                <a href="lists">Lists</a>
-                | 
-                <a href="https://github.com/HackerNews/API">API</a>
-                | 
-                <a href="security.html">Security</a>
-                | 
-                <a href="http://www.ycombinator.com/legal/">Legal</a>
-                | 
-                <a href="http://www.ycombinator.com/apply/">Apply to YC</a>
-                | 
-                <a href="mailto:hn@ycombinator.com">Contact</a>
-              </span>
-              <br>
-              <br>
-              <form method="get" action="//hn.algolia.com/">
-                Search:
-                <input type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false">
-              </form>
-            </center>
-          </td>
-          -->
         </tr>
       </table>
     </center>
-    <!-- src? pa que-->
-    <script type='text/javascript' src='hn.js?75MgWz1WB8f9o4gVrhqe'></script>
   </body>
 </html>
 
