@@ -70,8 +70,14 @@ class ContributionsController < ApplicationController
         end 
         
       else
-        format.html { redirect_to Contribution.find_by(url: @contribution.url), notice:"Contribution NOT created." }
-        format.json { render :show, location: @contribution }
+        if @contribution.title.blank?
+          format.html { redirect_to new_contribution_path, alert: "That's not a valid title." }
+        elsif @contribution.errors.include?(:invalidurl)
+          format.html { redirect_to new_contribution_path, alert: "That's not a valid URL." }
+        else
+          format.html { redirect_to Contribution.find_by(url: @contribution.url), notice:"Contribution NOT created." }
+          format.json { render :show, location: @contribution }
+        end
         # format.html { render :new, status: :unprocessable_entity }
         # format.json { render json: @contribution.errors, status: :unprocessable_entity }
       end

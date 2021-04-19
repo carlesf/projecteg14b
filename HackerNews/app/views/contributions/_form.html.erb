@@ -31,8 +31,13 @@
             </td>
           </tr>
           <tr id="pagespace" Submit style="height:10px"></tr>
+
             <tr>
-              <td>    
+              <td>
+                <% if not flash[:alert].blank? %>
+                  <%= alert %>
+                  <br><br>  
+                <% end %>
                 <%= form_with(model: contribution) do |form| %>
                   <% if contribution.errors.any? %>
                     <div id="error_explanation">
