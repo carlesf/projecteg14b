@@ -46,12 +46,12 @@
                 </td>
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
-                    <!-- USER, (1) = karma (?) -->
+                    <!-- USER -->
                     <% if logged_in? %>
                       <a id='me' href="<%= users_path %>/<%= current_user.id %>"><%= current_user.email %></a> | 
                       <a id='logout' href=<%= logout_path %>>logout</a> 
                     <% else %>
-                      <%= button_to "login", '/auth/google_oauth2', :class => 'button'  %>
+                      <%= link_to 'login', '/auth/google_oauth2', method: :post, :class => 'button'%>
                     <% end %>
                   </span>
                 </td>
@@ -72,7 +72,7 @@
                       <a id=<%= @contribution.id %>>
                         
                         <div class='votearrow' title='upvote'>
-                          <%= link_to 'aixoNoEsVeu', point_contribution_path(@contribution), method: :put, :style => "opacity:0" %>
+                          <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
                         </div>
 
                       </a>
@@ -90,7 +90,6 @@
                     <span class="score" id="score_<%= @contribution.id %>"><%= @contribution.points %> points</span> 
                     by
                     <!-- USER -->
-                    <!-- no redirecciona on toca el user -->
                     <a href="<%= users_path %>/<%= @contribution.user_id %>" class="hnuser"><%= @contribution.user %></a> 
                     <span class="age">
                       <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(@contribution.created_at).round) %></a>

@@ -26,6 +26,9 @@ class ContributionsController < ApplicationController
         format.html { redirect_to newest_contributions_path }
       elsif @view == "ask" 
         format.html { redirect_to ask_contributions_path }
+      elsif @view == "show"
+        format.html { redirect_to Contribution.find_by(id: @contribution.id) }
+
       end
     end 
   end
@@ -57,8 +60,15 @@ class ContributionsController < ApplicationController
 
     respond_to do |format|
       if @contribution.save
-        format.html { redirect_to @contribution, notice: "Contribution was successfully created." }
-        format.json { render :show, status: :created, location: @contribution }
+        
+        if @contribution.tipus == "ask"
+          format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
+          format.json { render :show, status: :created, location: @contribution }
+        else
+          format.html { redirect_to contributions_path, notice: "Contribution was successfully created." }
+          format.json { render :show, status: :created, location: @contribution }
+        end 
+        
       else
         format.html { redirect_to Contribution.find_by(url: @contribution.url), notice:"Contribution NOT created." }
         format.json { render :show, location: @contribution }

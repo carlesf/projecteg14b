@@ -1,8 +1,5 @@
 class ApplicationController < ActionController::Base
-  def hello
-    render html: "hello, world!"
-  end
-  
+
 private
 
     helper_method [:current_user, :logged_in?]

@@ -52,7 +52,7 @@
                         <a id='me' href="<%= users_path %>/<%= current_user.id %>"><%= current_user.email %></a> | 
                         <a id='logout' href=<%= logout_path %>>logout</a> 
                       <% else %>
-                        <%= button_to "login", '/auth/google_oauth2', :class => 'button'  %>
+                        <%= link_to 'login', '/auth/google_oauth2', method: :post, :class => 'button'%>
                       <% end %>
                     </span>
                   </td>
@@ -62,12 +62,21 @@
           </tr>
           
           <tr id="pagespace" title="Profile: <%= @user.email %>" style="height:10px"></tr>
-          
-          <tr>
-            <td>
-              <form class="profileform" method="post" action="/xuser">
-                <input type="hidden" name="id" value="kidagakash">
-                <input type="hidden" name="hmac" value="2721003060f015d0cfd942ac94efc8070dc2d985">
+            <tr>
+              <td>
+                <%= form_with(model: @user) do |form| %>
+                  <% if @user.errors.any? %>
+                    <div id="error_explanation">
+                      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+                
+                      <ul>
+                        <% @user.errors.each do |error| %>
+                          <li><%= error.full_message %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% end %>
+                
                 <table border="0">
                   <tr class='athing'>
                     <td valign="top">user:</td>
@@ -79,21 +88,16 @@
                   <tr>
                     <td valign="top">created:</td>
                     <td>
-                      <!-- link to date? -->
-                      <a href="<%= users_path %>/<%= @user.id %>"><%= @user.created_at %></a> 
+                      <%= @user.created_at %>
                     </td>
                   </tr>
-                  
+
                   <tr>
                     <td valign="top">about:</td>
                     <td style="overflow:hidden;">
-                      <textarea cols="60" rows="5" wrap="virtual" name="about"></textarea> 
-                      <!-- aixo no cal 
-                      <font size="-2">
-                        <a href="formatdoc" tabindex="-1">
-                          <font color="#afafaf">help</font>
-                        </a>
-                      </font> -->
+                      <div class="field">
+                        <%= form.text_area :about, cols: "60", rows: "5" %>
+                      </div>
                     </td>
                   </tr>
                   
@@ -130,17 +134,25 @@
                       <span style='font-style:italic'>(private)</span>
                     </td>
                   </tr>
+                  
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div class="actions">
+                        <%= form.submit 'update' %>
+                      </div>
+                    </td>
+                  </tr>
 
-
-                </table>
-                <br>
-                <input type="submit" value="update">
-              </form>
-              <br>
-              <br>
-            </td>
-          </tr>
-          
+                </table>  
+                <% end %>
+              </td>
+            </tr>
+            <tr>
+              <td bgcolor="#ff6600"></td>
+            </tr>
+            <br>
+            <br>
         </table>
       </center>
     </body>
@@ -222,8 +234,7 @@
                   <tr>
                     <td valign="top">created:</td>
                     <td>
-                      <!-- link to date? -->
-                      <a href="<%= users_path %>/<%= @user.id %>"><%= @user.created_at %></a> 
+                      <%= @user.created_at %>
                     </td>
                   </tr>
                   <tr>
