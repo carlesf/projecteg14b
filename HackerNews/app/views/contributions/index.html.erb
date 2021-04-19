@@ -43,7 +43,7 @@
                     <a href=<%= new_contribution_path %>>submit</a>            
                   </span>
                 </td>
-                <td style="text-align:right;padding-right:4px;">
+                <td style="text-align:right">
                   <span class="pagetop">
                     <!-- USER -->
                     <% if logged_in? %>
@@ -103,7 +103,7 @@
                       <span class="score" id="score_<%= contribution.id %>"><%= contribution.points %> points</span> 
                       by
                       <!-- USER -->
-                      <a href="user?id=nicoburns" class="hnuser">default</a> 
+                      <a href="user?id=nicoburns" class="hnuser"><%= contribution.user %></a> 
                       <span class="age">
                         <a href="contributions/<%= contribution.id %>"><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
                       </span>
@@ -193,6 +193,7 @@
         <td><%= contribution.tipus %></td>
         <td><%= contribution.url %></td>
         <td><%= contribution.text %></td>
+        <td><%= contribution.user %></td>
         <td><%= link_to 'Show', contribution %></td>
         <td><%= link_to 'Edit', edit_contribution_path(contribution) %></td>
         <td><%= link_to 'Destroy', contribution, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -207,5 +208,3 @@
 
 <%= link_to 'New Contribution', new_contribution_path %>
 <br>
-
-<!--git.email tasting-->

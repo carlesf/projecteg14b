@@ -17,6 +17,7 @@ class ContributionsController < ApplicationController
   def point
     @contribution.points += 1
     @contribution.save
+    # aqui peta tot i que suma els punts
     respond_to do |format|
       @view = params[:view]
       if @view == "index"
@@ -45,6 +46,7 @@ class ContributionsController < ApplicationController
   # POST /contributions or /contributions.json
   def create
     @contribution = Contribution.new(contribution_params)
+    @contribution.user = current_user.email
     if @contribution.url.empty?
       @contribution.tipus = "ask"
     else

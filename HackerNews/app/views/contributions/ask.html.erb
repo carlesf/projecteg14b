@@ -45,8 +45,12 @@
                 <td style="text-align:right;padding-right:4px;">
                   <span class="pagetop">
                     <!-- USER -->
-                    <a id='me' href="contributions">default</a> (1) | 
-                    <a id='logout' href="contributions">logout</a>
+                    <% if logged_in? %>
+                      <a id='me' href="<%= users_path %>/<%= current_user.id %>"><%= current_user.email %></a> | 
+                      <a id='logout' href=<%= logout_path %>>logout</a> 
+                    <% else %>
+                      <%= button_to "login", '/auth/google_oauth2', :class => 'button'  %>
+                    <% end %>
                   </span>
                 </td>
               </tr>
@@ -89,7 +93,7 @@
                       <span class="score" id="score_<%= contribution.id %>"><%= contribution.points %> points</span> 
                       by
                       <!-- USER -->
-                      <a href="user?id=nicoburns" class="hnuser">default</a> 
+                      <a href="user?id=nicoburns" class="hnuser"><%= contribution.user %></a> 
                       <span class="age">
                         <a href="contributions/<%= contribution.id %>"><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
                       </span>

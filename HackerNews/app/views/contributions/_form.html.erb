@@ -1,110 +1,118 @@
-<html lang="en" op="submit">
-  <head>
-    <meta name="referrer" content="origin">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheets" type="text/css" href="application.css">
-    <link rel="shortcut icon" href="favicon.ico">
-    <title>Submit | Hacker News</title>
-  </head>
+<% if logged_in? %>
 
-<body>
-    <center>
-      <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
-        <tr>
-          <td bgcolor="#ff6600">
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
-              <tr>
-                <td style="width:18px;padding-right:4px">
-                  <a href=<%= contributions_path %>>
-                    <%= image_tag("y18.gif", :width => "18", :height =>"18", :style =>"border:1px white solid;") %>
-                  </a>
-                </td>
-                <td style="line-height:12pt; height:10px;">
-                  <span class="pagetop">
-                    <b>Submit</b>
-                  </span>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        <tr id="pagespace" Submit style="height:10px"></tr>
+  <html lang="en" op="submit">
+    <head>
+      <meta name="referrer" content="origin">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheets" type="text/css" href="application.css">
+      <link rel="shortcut icon" href="favicon.ico">
+      <title>Submit | Hacker News</title>
+    </head>
+  
+  <body>
+      <center>
+        <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
           <tr>
-            <td>    
-              <%= form_with(model: contribution) do |form| %>
-                <% if contribution.errors.any? %>
-                  <div id="error_explanation">
-                    <h2><%= pluralize(contribution.errors.count, "error") %> prohibited this contribution from being saved:</h2>
-              
-                    <ul>
-                      <% contribution.errors.each do |error| %>
-                        <li><%= error.full_message %></li>
-                      <% end %>
-                    </ul>
-                  </div>
-                <% end %>          
-              <table border="0">
+            <td bgcolor="#ff6600">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
                 <tr>
-                  <td><%= form.label :title %></td>
-                  <td>
-                    <div class="field", size="50">
-                      <%= form.text_field :title, size: 50 %>
-                    </div>
+                  <td style="width:18px;padding-right:4px">
+                    <a href=<%= contributions_path %>>
+                      <%= image_tag("y18.gif", :width => "18", :height =>"18", :style =>"border:1px white solid;") %>
+                    </a>
+                  </td>
+                  <td style="line-height:12pt; height:10px;">
+                    <span class="pagetop">
+                      <b>Submit</b>
+                    </span>
                   </td>
                 </tr>
-                <tr>
-                  <td><%= form.label :url %></td>
-                    <td>
-                      <div class="field">
-                        <%= form.text_field :url, size: 50 %>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <b>or</b>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><%= form.label :text %></td>
-                    <td>
-                      <div class="field">
-                        <%= form.text_area :text, cols: "49", rows: "4" %>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <div class="actions">
-                        <%= form.submit 'Submit' %>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr style="height:20px"></tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      Leave url blank to submit a question for discussion. If there is no url, the text (if any) will appear at the top of the thread.
-                      <br></br>
-                    </td>
-                  </tr>
-                <% end %>
               </table>
             </td>
           </tr>
-          <tr>
-            <td bgcolor="#ff6600"></td>
+          <tr id="pagespace" Submit style="height:10px"></tr>
+            <tr>
+              <td>    
+                <%= form_with(model: contribution) do |form| %>
+                  <% if contribution.errors.any? %>
+                    <div id="error_explanation">
+                      <h2><%= pluralize(contribution.errors.count, "error") %> prohibited this contribution from being saved:</h2>
+                
+                      <ul>
+                        <% contribution.errors.each do |error| %>
+                          <li><%= error.full_message %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% end %>          
+                <table border="0">
+                  <tr>
+                    <td><%= form.label :title %></td>
+                    <td>
+                      <div class="field", size="50">
+                        <%= form.text_field :title, size: 50 %>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><%= form.label :url %></td>
+                      <td>
+                        <div class="field">
+                          <%= form.text_field :url, size: 50 %>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <b>or</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><%= form.label :text %></td>
+                      <td>
+                        <div class="field">
+                          <%= form.text_area :text, cols: "49", rows: "4" %>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <div class="actions">
+                          <%= form.submit 'Submit' %>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr style="height:20px"></tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        Leave url blank to submit a question for discussion. If there is no url, the text (if any) will appear at the top of the thread.
+                        <br></br>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td bgcolor="#ff6600"></td>
+            </tr>
           </tr>
-        </tr>
-      </table>
-    </center>
-  </body>
+        </table>
+      </center>
+    </body>
+<% else %>
+  <b>You have to be logged in to submit.</b>
+  <br>
+  <br>
+  <%= button_to "login", '/auth/google_oauth2', :class => 'button'  %>
+<% end %>
 
  
  
