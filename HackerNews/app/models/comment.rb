@@ -1,3 +1,3 @@
 class Comment < ApplicationRecord
-  #belongs_to :contribution
+  validates :content, length: {minimum: 1}
 end

@@ -73,18 +73,6 @@ class ContributionsController < ApplicationController
 
     respond_to do |format|
       if @contribution.save
-        
-=begin
-        if @contribution.tipus == "ask"
-          format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
-          format.json { render :show, status: :created, location: @contribution }
-        else
-          format.html { redirect_to contributions_path, notice: "Contribution was successfully created." }
-          format.json { render :show, status: :created, location: @contribution }
-        end 
-=end
-
-        
         format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
         format.json { render :show, status: :created, location: @contribution }
         

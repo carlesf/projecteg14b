@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :replies
   resources :comments
   resources :users 
   get '/auth/:provider/callback' => 'sessions#omniauth'
