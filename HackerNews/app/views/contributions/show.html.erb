@@ -94,7 +94,6 @@
                     <span class="age">
                       <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(@contribution.created_at).round) %></a>
                     </span>
-                    <span id="unv_<%= @contribution.id %>"></span> 
                     |
                     <!-- falta posar num de comments -->
                     <!-- comments: ha de redireccionar a la pag de la contr  -->
@@ -109,13 +108,11 @@
                   </td>
                 </tr>
                 
-                
+                <!-- COMMENT -->
                 <tr style="height:10px"></tr>
                 <tr>
                   <td colspan="1"></td>
                   <td>
-                    <!-- COMMENT -->
-                    
                     <%= form_with(model: @comment, url: comments_path) do |form| %>
                         <% if @comment.errors.any? %>
                           <div id="error_explanation">
@@ -140,8 +137,13 @@
                         <tr>
                           <td>
                             <div class="actions">
-                              <%= hidden_field_tag(:contr_id, @contribution.id) %>
-                              <%= form.submit 'add comment' %>
+                              <% if logged_in? %>
+                                <%= hidden_field_tag(:contr_id, @contribution.id) %>
+                                <%= form.submit 'add comment' %>
+                              <% else %>
+                                <i>You need to be logged in to submit a comment: </i>
+                                <u><%= link_to 'login', '/auth/google_oauth2', method: :post, :class => 'button'%></u>
+                              <% end %>
                             </div>
                           </td>
                         </tr>
@@ -154,47 +156,100 @@
             </table>
             <br>
             <br>
-            <!-- COMMENT TREE
-            <table></table>
-            -->
+            
+            <!-- COMMENT TREE -->
             <table border="0" class='comment-tree'>
-                     <tr class='athing comtr' id='26740742'>
-                        <td>
-                           <table border='0'>
-                              <tr>
-                                 <td class='ind'><img src="s.gif" height="1" width="0"></td>
-                                 <td valign="top" class="votelinks">
-                                    <center>
-                                       <a id='up_26740742' onclick='return vote(event, this, "up")' href='vote?id=26740742&amp;how=up&amp;auth=af6809bdd405575d5bbf55393a9bdcf15e5f273f&amp;goto=item%3Fid%3D26723110#26740742'>
-                                          <div class='votearrow' title='upvote'></div>
-                                       </a>
-                                    </center>
-                                 </td>
-                                 <td class="default">
-                                    <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
-                                       <a href="user?id=healeycodes" class="hnuser">healeycodes</a> <span class="age"><a href="item?id=26740742">20 minutes ago</a></span> <span id="unv_26740742"></span><span class="par"></span> <a class="togg" n="1" href="javascript:void(0)" onclick="return toggle(event, 26740742)">[–]</a>          <span class='storyon'></span>
-                                       </span>
-                                    </div>
-                                    <br>
-                                    <div class="comment">
-                                       <span class="commtext c00">
-                                          I welcome any improvements to my naive exploration in this article!
-                                          <p>I&#x27;ve received two emails from readers:
-                                          <p>- One suggested converting RGB to a color space that better matches human visual perception, like CIELAB.
-                                          <p>- Another suggested compressing the color space by using K-means clustering (by guessing K as the number of threads)
-                                       </span>
-                                       <div class='reply'>
-                                          <p><font size="1">
-                                             <u><a href="reply?id=26740742&amp;goto=item%3Fid%3D26723110%2326740742">reply</a></u>
-                                             </font>
-                                       </div>
-                                    </div>
-                                 </td>
-                              </tr>
-                           </table>
-                        </td>
-                     </tr>
+              <% iteration = 0 %>
+              <% Comment.where(contr_id: @contribution.id).each do |comment| %>
+                <% iteration += 1 %>
+                <tr class='athing comtr'>
+                  <table border='0'>
+                    <tr>
+                      <td valign="top" class="votelinks">
+                        <center>
+                          <a id=<% comment.id %>>
+                            <!-- cal que s'arregli quan es fa el VOTE -->
+                            <div class='votearrow' title='upvote'>
+                              <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
+                            </div>
+                          </a>
+                        </center>
+                      </td>
+                      
+                      <td>
+                        <div style="margin-top:2px; margin-bottom:-10px;">
+                          
+                          <span class="comhead">
+                            <a href="<%= users_path %>/<%= comment.user_id %>" class="hnuser"><%=User.find_by(id: comment.user_id).email%></a> 
+                            
+                            <span class="age">
+                              <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %></a>
+                            </span>
+                            
+                            <!-- desplegar ?
+                            <a class="togg" n="1" href="javascript:void(0)" onclick="return toggle(event, 26740742)">[–]</a>-->        
+                          </span>
+                        </div>
+                        <br>
+                        <div class="comment">
+                            <span class="commtext c00">
+                               <%= comment.content %>
+                            </span>
+                            <div class='reply'>
+                               <p><font size="1">
+                                    <!-- reply porta a una pag /repply on es veu el comment i el formulari de reply a sota -->
+                                    <u><a href="reply?id=26740742&amp;goto=item%3Fid%3D26723110%2326740742">reply</a></u>
+                                  </font>
+                            </div>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>  
                   </table>
+                  
+                </tr>
+              
+            </table>
+            
+            -----------------------
+            <table border="0" class='comment-tree'>
+              <tr class='athing comtr'>
+                <td>
+                   <table border='0'>
+                      <tr>
+                         <td class='ind'><img src="s.gif" height="1" width="0"></td>
+                         <td valign="top" class="votelinks">
+                            <center>
+                               <a id='up_26740742' onclick='return vote(event, this, "up")' href='vote?id=26740742&amp;how=up&amp;auth=af6809bdd405575d5bbf55393a9bdcf15e5f273f&amp;goto=item%3Fid%3D26723110#26740742'>
+                                  <div class='votearrow' title='upvote'></div>
+                               </a>
+                            </center>
+                         </td>
+                         <td class="default">
+                            <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
+                               <a href="user?id=healeycodes" class="hnuser">healeycodes</a> <span class="age"><a href="item?id=26740742">20 minutes ago</a></span> <span id="unv_26740742"></span><span class="par"></span> <a class="togg" n="1" href="javascript:void(0)" onclick="return toggle(event, 26740742)">[–]</a>          <span class='storyon'></span>
+                               </span>
+                            </div>
+                            <br>
+                            <div class="comment">
+                               <span class="commtext c00">
+                                  I welcome any improvements to my naive exploration in this article!
+                                  <p>I&#x27;ve received two emails from readers:
+                                  <p>- One suggested converting RGB to a color space that better matches human visual perception, like CIELAB.
+                                  <p>- Another suggested compressing the color space by using K-means clustering (by guessing K as the number of threads)
+                               </span>
+                               <div class='reply'>
+                                  <p><font size="1">
+                                     <u><a href="reply?id=26740742&amp;goto=item%3Fid%3D26723110%2326740742">reply</a></u>
+                                     </font>
+                               </div>
+                            </div>
+                         </td>
+                      </tr>
+                   </table>
+                </td>
+              </tr>
+              </table>
             <br>
             <br>
           </td>
