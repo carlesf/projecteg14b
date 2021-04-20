@@ -29,8 +29,7 @@
                       </b>
                       <a href=<%= newest_contributions_path %>>new</a>
                       |
-                      <!-- aixo caldra arreglar-ho -->
-                      <a href="treads">threads</a>
+                      <a href="<%= comments_path %>?threads=1">threads</a>
                       | 
                       <b style="color:rgba(0,0,0,0.2)">past</b>
                       | 
@@ -112,8 +111,7 @@
                     <tr>
                       <td></td>
                       <td>
-                        <!-- aixo caldra arreglar-ho -->
-                        <a href="treads">
+                        <a href="<%= comments_path %>?threads=1">
                           <u>comments</u>
                         </a> 
                       </td>
@@ -187,8 +185,7 @@
                       </b>
                       <a href=<%= newest_contributions_path %>>new</a>
                       |
-                      <!-- aixo caldra arreglar-ho -->
-                      <a href="treads">threads</a>
+                      <a href="<%= comments_path %>?threads=1">threads</a>
                       | 
                       <b style="color:rgba(0,0,0,0.2)">past</b>
                       | 
@@ -251,9 +248,7 @@
                     <td></td>
                     <td>
                       <!-- aixo caldra arreglar-ho -->
-                      <a href="treads">
-                        <u>comments</u>
-                      </a> 
+                      <u><a href="/comments?user_id=<%= @user.id %>">comments</a></u>
                     </td>
                   </tr>    
                   

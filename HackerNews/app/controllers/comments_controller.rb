@@ -3,7 +3,13 @@ class CommentsController < ApplicationController
 
   # GET /comments or /comments.json
   def index
-    @comments = Comment.all
+    
+    if params[:user_id]
+      @comments = Comment.where(user_id: params[:user_id]).order(created_at: :desc)
+    elsif params[:threads]
+      @comments = Comment.all
+    end
+    
   end
 
   # GET /comments/1 or /comments/1.json

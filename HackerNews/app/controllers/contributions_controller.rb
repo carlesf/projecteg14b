@@ -7,7 +7,7 @@ class ContributionsController < ApplicationController
   def index
     
     if params[:user_id]
-      @contributions = Contribution.where(user_id:params[:user_id]).order(created_at: :desc)
+      @contributions = Contribution.where(user_id: params[:user_id]).order(created_at: :desc)
     else 
       @contributions = Contribution.where(tipus: 'url').order(points: :desc)
     end
