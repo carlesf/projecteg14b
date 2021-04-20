@@ -1,4 +1,6 @@
 class ContributionsController < ApplicationController
+  #has_many :comments
+  
   before_action :set_contribution, only: %i[ show edit update destroy point ]
 
   # GET /contributions or /contributions.json
@@ -9,7 +11,7 @@ class ContributionsController < ApplicationController
     else 
       @contributions = Contribution.where(tipus: 'url').order(points: :desc)
     end
-    
+
   end
   
   def newest
@@ -39,8 +41,13 @@ class ContributionsController < ApplicationController
     end 
   end
   
+  def n_comm
+    self.comments.size
+  end
+  
   # GET /contributions/1 or /contributions/1.json
   def show
+    @comment = Comment.new
   end
 
   # GET /contributions/new
@@ -67,6 +74,7 @@ class ContributionsController < ApplicationController
     respond_to do |format|
       if @contribution.save
         
+=begin
         if @contribution.tipus == "ask"
           format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
           format.json { render :show, status: :created, location: @contribution }
@@ -74,6 +82,11 @@ class ContributionsController < ApplicationController
           format.html { redirect_to contributions_path, notice: "Contribution was successfully created." }
           format.json { render :show, status: :created, location: @contribution }
         end 
+=end
+
+        
+        format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
+        format.json { render :show, status: :created, location: @contribution }
         
       else
         if @contribution.title.blank?

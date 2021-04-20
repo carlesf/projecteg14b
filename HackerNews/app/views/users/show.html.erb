@@ -77,72 +77,72 @@
                     </div>
                   <% end %>
                 
-                <table border="0">
-                  <tr class='athing'>
-                    <td valign="top">user:</td>
-                    <td timestamp="">
-                      <a href="<%= users_path %>/<%= @user.id %>" class="<%= @user.email %>"><%= @user.email %></a> 
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td valign="top">created:</td>
-                    <td>
-                      <%= @user.created_at %>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td valign="top">about:</td>
-                    <td style="overflow:hidden;">
-                      <div class="field">
-                        <%= form.text_area :about, cols: "60", rows: "5" %>
-                      </div>
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td></td>
-                    <td>
-                      <u><a href="/contributions?user_id=<%= current_user.id %>">submissions</a></u>
-                      </a>
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td></td>
-                    <td>
-                      <!-- aixo caldra arreglar-ho -->
-                      <a href="treads">
-                        <u>comments</u>
-                      </a> 
-                    </td>
-                  </tr>    
-                  
-
-                  <tr>
-                    <td></td>
-                    <td>
-                      <a href="upvoted?id=kidagakash">
-                        <u>upvoted submissions</u>
-                      </a> /
-                      <a href="upvoted?id=kidagakash&amp;comments=t">
-                        <u>comments</u>
-                      </a>
-                      <span style='font-style:italic'>(private)</span>
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td></td>
-                    <td>
-                      <div class="actions">
-                        <%= form.submit 'update' %>
-                      </div>
-                    </td>
-                  </tr>
-
-                </table>  
+                  <table border="0">
+                    <tr class='athing'>
+                      <td valign="top">user:</td>
+                      <td timestamp="">
+                        <a href="<%= users_path %>/<%= @user.id %>" class="<%= @user.email %>"><%= @user.email %></a> 
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td valign="top">created:</td>
+                      <td>
+                        <%= @user.created_at %>
+                      </td>
+                    </tr>
+  
+                    <tr>
+                      <td valign="top">about:</td>
+                      <td style="overflow:hidden;">
+                        <div class="field">
+                          <%= form.text_area :about, cols: "60", rows: "5" %>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td></td>
+                      <td>
+                        <u><a href="/contributions?user_id=<%= current_user.id %>">submissions</a></u>
+                        </a>
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td></td>
+                      <td>
+                        <!-- aixo caldra arreglar-ho -->
+                        <a href="treads">
+                          <u>comments</u>
+                        </a> 
+                      </td>
+                    </tr>    
+                    
+  
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="upvoted?id=kidagakash">
+                          <u>upvoted submissions</u>
+                        </a> /
+                        <a href="upvoted?id=kidagakash&amp;comments=t">
+                          <u>comments</u>
+                        </a>
+                        <span style='font-style:italic'>(private)</span>
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td></td>
+                      <td>
+                        <div class="actions">
+                          <%= form.submit 'update' %>
+                        </div>
+                      </td>
+                    </tr>
+  
+                  </table>  
                 <% end %>
               </td>
             </tr>
