@@ -88,14 +88,20 @@
                     </center>
                   </td>
                   <td class="title">
-                    <a href=<%= contribution.url %> class="storylink"><%= contribution.title %></a>
-                    <span class="sitebit comhead"> 
-                      <% if contribution.tipus == 'url' %>
-                        (
-                        <span class="sitestr"><%= contribution.url %></span>
-                        )
-                      <% end %>
-                    </span>
+                    <% if contribution.tipus == 'ask' %>
+                      <a href="<%= contributions_path %>/<%= contribution.id %>"><%= contribution.title %></a>
+                
+                    <% else %>
+                      <a href="<%= contribution.url %>" class="storylink"><%= contribution.title %></a>
+                      <span class="sitebit comhead"> 
+                          (
+                          <span class="sitestr"><%= contribution.url %></span>
+                          )
+                      </span>
+
+                    <% end %>
+                    
+
                   </td>
                 </tr>
                 <tr>
@@ -110,7 +116,7 @@
                     </span>
                     <span id="unv_<%= contribution.id %>"></span> 
                     |
-                    <a href="contributions/<%= contribution.id %>">0&nbsp;comments</a>
+                    <a href="contributions/<%= contribution.id %>">comments</a>
                   </td>
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>

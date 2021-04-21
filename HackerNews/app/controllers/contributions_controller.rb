@@ -40,10 +40,7 @@ class ContributionsController < ApplicationController
       end
     end 
   end
-  
-  def n_comm
-    self.comments.size
-  end
+
   
   # GET /contributions/1 or /contributions/1.json
   def show
@@ -106,7 +103,18 @@ class ContributionsController < ApplicationController
 
   # DELETE /contributions/1 or /contributions/1.json
   def destroy
+    
+    for comment in Comment.where(contr_id: @contribution.id)
+      
+      for reply in Reply.where(commentreply_id: comment.id)
+        reply.destroy
+      end
+      
+      comment.destroy
+    end
+    
     @contribution.destroy
+    
     respond_to do |format|
       format.html { redirect_to contributions_url, notice: "Contribution was successfully destroyed." }
       format.json { head :no_content }

@@ -3,6 +3,7 @@ class RepliesController < ApplicationController
 
   # GET /replies or /replies.json
   def index
+   #@comment = Comment.find_by(id: params[:commentreply_id])
     @replies = Reply.all
   end
 
@@ -22,14 +23,20 @@ class RepliesController < ApplicationController
   # POST /replies or /replies.json
   def create
     @reply = Reply.new(reply_params)
+    @reply.user_id = current_user.id
+    @reply.commentreply_id = params[:commentreply_id]
 
     respond_to do |format|
       if @reply.save
-        format.html { redirect_to @reply, notice: "Reply was successfully created." }
+        format.html { redirect_to Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id), notice: "Reply was successfully created." }
         format.json { render :show, status: :created, location: @reply }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @reply.errors, status: :unprocessable_entity }
+        if @reply.content.blank?
+          format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id], alert: "Reply cannot be empty." }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @reply.errors, status: :unprocessable_entity }
+        end
       end
     end
   end

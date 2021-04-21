@@ -188,9 +188,7 @@
                             <span class="age">
                               <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %></a>
                             </span>
-                            
-                            <!-- desplegar ?
-                            <a class="togg" n="1" href="javascript:void(0)" onclick="return toggle(event, 26740742)">[–]</a>-->        
+    
                           </span>
                         </div>
                         <br>
@@ -201,7 +199,7 @@
                             <div class='reply'>
                                <p><font size="1">
                                     <!-- reply porta a una pag /repply on es veu el comment i el formulari de reply a sota -->
-                                    <u><a href="reply?id=26740742&amp;goto=item%3Fid%3D26723110%2326740742">reply</a></u>
+                                    <u><a href="<%= new_reply_path %>?commentreply_id=<%= comment.id %>">reply</a></u>
                                   </font>
                             </div>
                         </div>
@@ -209,52 +207,9 @@
                     </tr>
                   <% end %>  
                   </table>
-                  
                 </tr>
-              
             </table>
             
-            -----------------------
-            <table border="0" class='comment-tree'>
-              <tr class='athing comtr'>
-                <td>
-                   <table border='0'>
-                      <tr>
-                         <td class='ind'><img src="s.gif" height="1" width="0"></td>
-                         <td valign="top" class="votelinks">
-                            <center>
-                               <a id='up_26740742' onclick='return vote(event, this, "up")' href='vote?id=26740742&amp;how=up&amp;auth=af6809bdd405575d5bbf55393a9bdcf15e5f273f&amp;goto=item%3Fid%3D26723110#26740742'>
-                                  <div class='votearrow' title='upvote'></div>
-                               </a>
-                            </center>
-                         </td>
-                         <td class="default">
-                            <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
-                               <a href="user?id=healeycodes" class="hnuser">healeycodes</a> <span class="age"><a href="item?id=26740742">20 minutes ago</a></span> <span id="unv_26740742"></span><span class="par"></span> <a class="togg" n="1" href="javascript:void(0)" onclick="return toggle(event, 26740742)">[–]</a>          <span class='storyon'></span>
-                               </span>
-                            </div>
-                            <br>
-                            <div class="comment">
-                               <span class="commtext c00">
-                                  I welcome any improvements to my naive exploration in this article!
-                                  <p>I&#x27;ve received two emails from readers:
-                                  <p>- One suggested converting RGB to a color space that better matches human visual perception, like CIELAB.
-                                  <p>- Another suggested compressing the color space by using K-means clustering (by guessing K as the number of threads)
-                               </span>
-                               <div class='reply'>
-                                  <p><font size="1">
-                                     <u><a href="reply?id=26740742&amp;goto=item%3Fid%3D26723110%2326740742">reply</a></u>
-                                     </font>
-                               </div>
-                            </div>
-                         </td>
-                      </tr>
-                   </table>
-                </td>
-              </tr>
-              </table>
-            <br>
-            <br>
           </td>
         </tr>
         <tr>
@@ -263,4 +218,5 @@
       </table>
     </center>
   </body>
+</html>
   
