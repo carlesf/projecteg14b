@@ -242,6 +242,7 @@
 <table>
   <thead>
     <tr>
+      <th>ID</th>
       <th>Content</th>
       <th>User</th>
       <th>Contr</th>
@@ -251,7 +252,8 @@
 
   <tbody>
     <% @comments.each do |comment| %>
-      <tr>
+      <tr>        
+        <td><%= comment.id %></td>
         <td><%= comment.content %></td>
         <td><%= comment.user_id %></td>
         <td><%= comment.contr_id %></td>

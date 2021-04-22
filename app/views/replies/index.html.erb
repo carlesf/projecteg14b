@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+      <th>ID</th>
       <th>Content</th>
       <th>User</th>
       <th>Commentreply</th>
@@ -15,6 +16,7 @@
   <tbody>
     <% @replies.each do |reply| %>
       <tr>
+        <td><%= reply.id %></td>
         <td><%= reply.content %></td>
         <td><%= reply.user_id %></td>
         <td><%= reply.commentreply_id %></td>

@@ -1,12 +1,19 @@
 Rails.application.routes.draw do
-  resources :replies
-  resources :comments
+  resources :replies do
+    resources :replies
+  end
+  
+  resources :comments do
+    resources :replies
+  end
+  
   resources :users 
   get '/auth/:provider/callback' => 'sessions#omniauth'
   get 'logout' => 'sessions#destroy'
   
 
   resources :contributions do
+    resources :comments
     collection do
       get 'newest'
       get 'ask'

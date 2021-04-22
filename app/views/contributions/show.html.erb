@@ -162,9 +162,9 @@
             
             <!-- COMMENT TREE -->
             <table border="0" class='comment-tree'>
-              <% iteration = 0 %>
+              <%# iteration = 0 %>
               <% Comment.where(contr_id: @contribution.id).each do |comment| %>
-                <% iteration += 1 %>
+                <%# iteration += 1 %>
                 <tr class='athing comtr'>
                   <table border='0'>
                     <tr>
@@ -198,7 +198,7 @@
                             </span>
                             <div class='reply'>
                                <p><font size="1">
-                                    <!-- reply porta a una pag /repply on es veu el comment i el formulari de reply a sota -->
+                                    <!-- reply porta a una pag /reply on es veu el comment i el formulari de reply a sota -->
                                     <u><a href="<%= new_reply_path %>?commentreply_id=<%= comment.id %>">reply</a></u>
                                   </font>
                             </div>
@@ -207,63 +207,62 @@
                     </tr>
                     <tr>
                       <!-- REPLIES -->
-                      
-                      <table class='reply-tree'>
-                        <% iteration = 0 %>
-                        <% Reply.where(commentreply_id: comment.id).each do |reply| %>
-                          <% iteration += 1 %>
-                          <tr class='athing comtr'>
-                            <table border='0'>
-                              
-                              <tr>
-                                <td colspan=<%= iteration%></td>
-                                <td valign="top" class="votelinks">
-                                  <center>
-                                    <a id=<% reply.id %>>
-                                      <!-- cal que s'arregli quan es fa el VOTE -->
-                                      <div class='votearrow' title='upvote'>
-                                        <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
-                                      </div>
-                                    </a>
-                                  </center>
-                                </td>
+                      <td colspan='1'></td>
+                      <td>
+                        <table class='reply-tree'>
+                          <% iteration = 0 %>
+                          <% Reply.where(commentreply_id: comment.id).each do |reply| %>
+                            <% iteration += 1 %>
+                            <tr class='athing comtr'>
+                              <table border='0'>
                                 
-                                <td>
-                                  <div style="margin-top:2px; margin-bottom:-10px;">
-                                    
-                                    <span class="comhead">
-                                      <a href="<%= users_path %>/<%= reply.user_id %>" class="hnuser"><%=User.find_by(id: reply.user_id).email%></a> 
+                                <tr>
+                                  <td valign="top" class="votelinks">
+                                    <center>
+                                      <a id=<% reply.id %>>
+                                        <!-- cal que s'arregli quan es fa el VOTE -->
+                                        <div class='votearrow' title='upvote'>
+                                          <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
+                                        </div>
+                                      </a>
+                                    </center>
+                                  </td>
+                                  
+                                  <td>
+                                    <div style="margin-top:2px; margin-bottom:-10px;">
                                       
-                                      <span class="age">
-                                        <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(reply.created_at).round) %></a>
+                                      <span class="comhead">
+                                        <a href="<%= users_path %>/<%= reply.user_id %>" class="hnuser"><%=User.find_by(id: reply.user_id).email%></a> 
+                                        
+                                        <span class="age">
+                                          <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(reply.created_at).round) %> ago</a>
+                                        </span>
+                
                                       </span>
-              
-                                    </span>
-                                  </div>
-                                  <br>
-                                  <div class="comment">
-                                      <span class="commtext c00">
-                                         <%= reply.content %>
-                                      </span>
-                                      <div class='reply'>
-                                         <p><font size="1">
-                                              <!-- reply porta a una pag /repply on es veu el comment i el formulari de reply a sota -->
-                                              <u><a href="<%= new_reply_path %>?commentreply_id=<%= reply.id %>">reply</a></u>
-                                            </font>
-                                      </div>
-                                  </div>
-                                  <% end %> 
-                                </td>
-                                
-                              </tr>
-                            <% end %> 
-                            </table>
-                          </tr>
-                      </table>
-                      
+                                    </div>
+                                    <br>
+                                    <div class="comment">
+                                        <span class="commtext c00">
+                                           <%= reply.content %>
+                                        </span>
+                                        <div class='reply'>
+                                           <p><font size="1">
+                                                <!-- reply porta a una pag /repply on es veu el comment i el formulari de reply a sota -->
+                                                <u><a href="<%= new_reply_path %>?commentreply_id=<%= reply.id %>&r=1&contr=<%= @contribution.id %>">reply</a></u>
+                                              </font>
+                                        </div>
+                                    </div>
+                                    <% end %> 
+                                  </td>
+                                  
+                                </tr>
+
+                              <% end %> 
+                              </table>
+                            </tr>
+                        </table>
+                      </td>
                     </tr>
-                    
-                   
                   </table>
                 </tr>
             </table>

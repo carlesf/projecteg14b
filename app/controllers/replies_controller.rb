@@ -28,11 +28,21 @@ class RepliesController < ApplicationController
 
     respond_to do |format|
       if @reply.save
-        format.html { redirect_to Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id), notice: "Reply was successfully created." }
-        format.json { render :show, status: :created, location: @reply }
+        if params[:r]
+          format.html { redirect_to '/contributions/'+params[:contr], notice: "Reply was successfully created." }
+          format.json { render :show, status: :created, location: @reply }
+        else
+          format.html { redirect_to Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id), notice: "Reply was successfully created." }
+          format.json { render :show, status: :created, location: @reply }
+        end
+
       else
         if @reply.content.blank?
-          format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id], alert: "Reply cannot be empty." }
+          if params[:r]
+            format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id]+'&r=1&contr='+params[:contr], alert: "Reply cannot be empty." }
+          else
+            format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id], alert: "Reply cannot be empty." }
+          end
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @reply.errors, status: :unprocessable_entity }
@@ -56,6 +66,10 @@ class RepliesController < ApplicationController
 
   # DELETE /replies/1 or /replies/1.json
   def destroy
+    for r in Reply.where(commentreply_id: @reply.id)
+      r.destroy
+    end
+    
     @reply.destroy
     respond_to do |format|
       format.html { redirect_to replies_url, notice: "Reply was successfully destroyed." }
@@ -71,6 +85,6 @@ class RepliesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def reply_params
-      params.require(:reply).permit(:content, :user_id, :commentreply_id)
+      params.require(:reply).permit(:content, :user_id, :commentreply_id, :r, :contr)
     end
 end

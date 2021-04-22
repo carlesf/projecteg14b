@@ -1,5 +1,5 @@
 class Contribution < ApplicationRecord
-  #has_many :comments
+  #has_many :comments, as: :contr
   
   validates :title, length: {minimum: 1}
   validates :url, :allow_blank => true, :uniqueness => true, :if => :url?

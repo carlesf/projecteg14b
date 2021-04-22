@@ -1,6 +1,4 @@
 class ContributionsController < ApplicationController
-  #has_many :comments
-  
   before_action :set_contribution, only: %i[ show edit update destroy point ]
 
   # GET /contributions or /contributions.json
@@ -44,6 +42,7 @@ class ContributionsController < ApplicationController
   
   # GET /contributions/1 or /contributions/1.json
   def show
+    #@contribution = Contribution.find(params[:id])
     @comment = Comment.new
   end
 
@@ -129,6 +128,6 @@ class ContributionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def contribution_params
-      params.require(:contribution).permit(:title, :url, :text)
+      params.require(:contribution).permit(:title, :url, :text, :tipus)
     end
 end

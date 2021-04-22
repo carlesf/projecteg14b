@@ -46,19 +46,36 @@
                       </center>
                     </td>
                     <td class="subtext">
-  
-                      <a href="<%= users_path %>/<%= User.find_by(id: Comment.find_by(id: params[:commentreply_id]).user_id).id %>" class="hnuser"><%= User.find_by(id: Comment.find_by(id: params[:commentreply_id]).user_id).email %></a> 
+                      <% if params[:r] %>
+                        <a href="<%= users_path %>/<%= User.find_by(id: Reply.find_by(id: params[:commentreply_id]).user_id).id %>" class="hnuser"><%= User.find_by(id: Reply.find_by(id: params[:commentreply_id]).user_id).email %></a> 
+                      <% else %>
+                        <a href="<%= users_path %>/<%= User.find_by(id: Comment.find_by(id: params[:commentreply_id]).user_id).id %>" class="hnuser"><%= User.find_by(id: Comment.find_by(id: params[:commentreply_id]).user_id).email %></a> 
+                      <% end %>
                       
                       <span class="age">
-                        <%= distance_of_time_in_words(Time.now.minus_with_coercion(Comment.find_by(id: params[:commentreply_id]).created_at).round) %>
+                        <% if params[:r] %>
+                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(Reply.find_by(id: params[:commentreply_id]).created_at).round) %>                        
+                        <% else %>
+                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(Comment.find_by(id: params[:commentreply_id]).created_at).round) %>                        
+                        <% end %>
+                        
                       </span>
                       
                       |
-                      <a href="<%= contributions_path %>/<%= Contribution.find_by(id: Comment.find_by(id: params[:commentreply_id]).contr_id).id %>">parent</a>
+                      <% if params[:r] %>
+                        <a href="<%= contributions_path %>/<%= params[:contr] %>">parent</a>
+                      <% else %>
+                        <a href="<%= contributions_path %>/<%= Contribution.find_by(id: Comment.find_by(id: params[:commentreply_id]).contr_id).id %>">parent</a>
+                      <% end %>
+                      
 
                       | on:
-                      <a href="<%= contributions_path %>/<%= Contribution.find_by(id: Comment.find_by(id: params[:commentreply_id]).contr_id).id %>"><%= Contribution.find_by(id: Comment.find_by(id: params[:commentreply_id]).contr_id).title %></a>
-                      
+                      <% if params[:r] %>
+                        <a href="<%= contributions_path %>/<%= params[:contr] %>"><%= Contribution.find_by(id: params[:contr]).title %></a>
+                      <% else %>
+                        <a href="<%= contributions_path %>/<%= Contribution.find_by(id: Comment.find_by(id: params[:commentreply_id]).contr_id).id %>"><%= Contribution.find_by(id: Comment.find_by(id: params[:commentreply_id]).contr_id).title %></a>
+                      <% end %>
+
                     </td>
   
                   </tr>
@@ -66,7 +83,11 @@
                   <tr>
                     <td colspan="1"></td>
                     <td>
-                      <%= Comment.find_by(id: params[:commentreply_id]).content %>
+                      <% if params[:r] %>
+                        <%= Reply.find_by(id: params[:commentreply_id]).content %>
+                      <% else %>
+                        <%= Comment.find_by(id: params[:commentreply_id]).content %>
+                      <% end %>
                     </td>
                   </tr>
                   
@@ -104,6 +125,10 @@
                             <td>
                               <div class="actions">
                                   <%= hidden_field_tag(:commentreply_id, params[:commentreply_id]) %>
+                                  <% if params[:r] %>
+                                    <%= hidden_field_tag(:r, params[:r]) %>
+                                    <%= hidden_field_tag(:contr, params[:contr]) %>
+                                  <% end %>
                                   <%= form.submit 'reply' %>
     
                               </div>
