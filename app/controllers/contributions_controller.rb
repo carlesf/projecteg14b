@@ -64,11 +64,15 @@ class ContributionsController < ApplicationController
       @contribution.tipus = "ask"
     else
       @contribution.tipus = "url"
-      # Crear comment associat a @contribution: comment.text = text | comment.user = contribution.user
     end
 
     respond_to do |format|
       if @contribution.save
+        if @contribution.tipus == "url"
+          Comment.create(content: @contribution.text, user_id: current_user.id, contr_id: @contribution.id)
+          @contribution.text = ""
+          @contribution.save
+        end
         format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
         format.json { render :show, status: :created, location: @contribution }
         

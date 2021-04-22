@@ -83,7 +83,7 @@
                           <!-- USER -->
                           <a href="<%= users_path %>/<%= current_user.id %>" class="hnuser"><%= current_user.email %></a>
                           <span class="age">
-                            <%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %>
+                            <%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %> ago
                           </span>
                           |
                           <a href="<%= contributions_path %>/<%= Contribution.find_by(id: comment.contr_id).id %>">parent</a>
@@ -201,7 +201,7 @@
                         <!-- USER -->
                         <a href="<%= users_path %>/<%= params[:user_id] %>" class="hnuser"><%= User.find_by(id: params[:user_id]).email %></a>
                         <span class="age">
-                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %>
+                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %> ago
                         </span>
                         |
                         <a href="<%= contributions_path %>/<%= Contribution.find_by(id: comment.contr_id).id%>">parent</a>

@@ -91,7 +91,7 @@
                     <!-- USER -->
                     <a href="<%= users_path %>/<%= @contribution.user_id %>" class="hnuser"><%= @contribution.user %></a> 
                     <span class="age">
-                      <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(@contribution.created_at).round) %></a>
+                      <%= distance_of_time_in_words(Time.now.minus_with_coercion(@contribution.created_at).round) %> ago
                     </span>
                     |
                     <!-- falta posar num de comments -->
@@ -186,7 +186,7 @@
                             <a href="<%= users_path %>/<%= comment.user_id %>" class="hnuser"><%=User.find_by(id: comment.user_id).email%></a> 
                             
                             <span class="age">
-                              <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %></a>
+                              <%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %> ago
                             </span>
     
                           </span>
@@ -235,7 +235,7 @@
                                         <a href="<%= users_path %>/<%= reply.user_id %>" class="hnuser"><%=User.find_by(id: reply.user_id).email%></a> 
                                         
                                         <span class="age">
-                                          <a href=<%= @contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(reply.created_at).round) %> ago</a>
+                                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(reply.created_at).round) %> ago
                                         </span>
                 
                                       </span>

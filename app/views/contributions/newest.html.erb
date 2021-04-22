@@ -104,7 +104,7 @@
                     <!-- USER -->
                     <a href="<%= users_path %>/<%= contribution.user_id %>" class="hnuser"><%= contribution.user %></a> 
                     <span class="age">
-                      <a href=<%= contribution.id %>><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
+                      <%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %> ago
                     </span>
                     <span id="unv_<%= contribution.id %>"></span> 
                     |

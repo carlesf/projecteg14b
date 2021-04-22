@@ -94,11 +94,11 @@
                       <!-- USER -->
                       <a href="<%= users_path %>/<%= contribution.user_id %>" class="hnuser"><%= contribution.user %></a> 
                       <span class="age">
-                        <a href="contributions/<%= contribution.id %>"><%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %></a>
+                        <%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %> ago
                       </span>
                       <span id="unv_<%= contribution.id %>"></span> 
                       |
-                      <a href="contributions/<%= contribution.id %>">0&nbsp;comments</a>
+                      <a href=<%= contribution.id %>>comments</a>
                     </td>
                   </tr>
                   <tr class="spacer" style="height:5px"></tr>

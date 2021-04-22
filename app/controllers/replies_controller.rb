@@ -66,8 +66,13 @@ class RepliesController < ApplicationController
 
   # DELETE /replies/1 or /replies/1.json
   def destroy
-    for r in Reply.where(commentreply_id: @reply.id)
-      r.destroy
+    for re in Reply.where(commentreply_id: @reply.id)
+      
+      for reply in Reply.where(commentreply_id: re.id)
+        reply.destroy
+      end
+    
+      re.destroy
     end
     
     @reply.destroy

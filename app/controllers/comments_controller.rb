@@ -33,7 +33,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
-        format.html { redirect_to Contribution.find_by(id: @comment.contr_id) , notice: "Comment was successfully created." }
+        format.html { redirect_to Contribution.find_by(id:  params[:contr_id]) , notice: "Comment was successfully created." }
         format.json { render :show, status: :created, location: @comment }
       else
         if @comment.content.blank?
@@ -61,6 +61,10 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1 or /comments/1.json
   def destroy
+    
+    for reply in Reply.where(commentreply_id: @comment.id)
+      reply.destroy
+    end
     
     @comment.destroy
         

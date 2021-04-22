@@ -54,9 +54,9 @@
                       
                       <span class="age">
                         <% if params[:r] %>
-                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(Reply.find_by(id: params[:commentreply_id]).created_at).round) %>                        
+                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(Reply.find_by(id: params[:commentreply_id]).created_at).round) %> ago                        
                         <% else %>
-                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(Comment.find_by(id: params[:commentreply_id]).created_at).round) %>                        
+                          <%= distance_of_time_in_words(Time.now.minus_with_coercion(Comment.find_by(id: params[:commentreply_id]).created_at).round) %> ago                       
                         <% end %>
                         
                       </span>
