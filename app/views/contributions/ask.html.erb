@@ -98,7 +98,12 @@
                       </span>
                       <span id="unv_<%= contribution.id %>"></span> 
                       |
-                      <a href=<%= contribution.id %>>comments</a>
+                      <%= Comment.where(contr_id: contribution.id).size%>
+                      <% if Comment.where(contr_id: contribution.id).size > 1 || Comment.where(contr_id: contribution.id).size == 0%>
+                        <a href=<%= contribution.id %>>comments</a>
+                      <% else %>
+                        <a href=<%= contribution.id %>>comment</a>
+                      <% end %>
                     </td>
                   </tr>
                   <tr class="spacer" style="height:5px"></tr>

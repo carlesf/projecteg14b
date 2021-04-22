@@ -1,5 +1,9 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy ]
+  
+  def comments_nb
+    Comment.where(user_id: params[:user_id]).size
+  end
 
   # GET /comments or /comments.json
   def index
