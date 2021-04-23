@@ -78,7 +78,13 @@
                         </td>
                         <td class="subtext">
                           <!-- num points -->
-                          points
+                          <%= comment.points %>
+                          <% if comment.points == 1 %>
+                            point
+                          <% else %>
+                            points
+                          <% end %>
+                          
                           by
                           <!-- USER -->
                           <a href="<%= users_path %>/<%= current_user.id %>" class="hnuser"><%= current_user.email %></a>
@@ -87,12 +93,6 @@
                           </span>
                           |
                           <a href="<%= contributions_path %>/<%= Contribution.find_by(id: comment.contr_id).id %>">parent</a>
-                          <!--
-                          |
-                          edit
-                          |
-                          delete
-                          -->
                           | on:
                           <a href="<%= contributions_path %>/<%= Contribution.find_by(id: comment.contr_id).id %>"><%= Contribution.find_by(id: comment.contr_id).title %></a>
                         </td>

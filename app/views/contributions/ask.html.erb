@@ -71,15 +71,27 @@
                     </td>
                     <td valign="top" class="votelinks">
                       <center>
+                        <% if logged_in? %>
                         
-                        <a id=contribution.id>
+                          <% if !(Vote.find_by(voter_id: current_user.id, votable_id: contribution.id).nil?) %>
+                            <b style='color:#ff6600;'>
+                             *
+                            </b>
                           
-                          <div class='votearrow' title='upvote'>
-                            <%= link_to '.', point_contribution_path(contribution, :view => "ask"), method: :put, :style => "opacity:0" %>
-                          </div>
-
-                        </a>
-                        
+                          <% else %>
+                            <a>
+                              <div class='votearrow' title='upvote'>
+                                <%= link_to '.', point_contribution_path(contribution, :view => "ask"), method: :put, :style => "opacity:0" %>
+                              </div>
+                            </a>
+                          <% end %>
+  
+                        <% else %>
+                          <b style='color:#ff6600;'>
+                            *
+                          </b>
+                        <% end %>
+  
                       </center>
                     </td>
                     <td class="title">
@@ -97,11 +109,18 @@
                         <%= distance_of_time_in_words(Time.now.minus_with_coercion(contribution.created_at).round) %> ago
                       </span>
                       <span id="unv_<%= contribution.id %>"></span> 
+                      <% if logged_in? && !(Vote.find_by(voter_id: current_user.id, votable_id: contribution.id).nil?) %>
+                        |
+                        <%= link_to 'unvote', unvote_contribution_path(contribution, :view => "ask"), method: :put %>
+                      <% end %>
                       |
-                      <%= Comment.where(contr_id: contribution.id).size%>
-                      <% if Comment.where(contr_id: contribution.id).size > 1 || Comment.where(contr_id: contribution.id).size == 0%>
+                      <% if Comment.where(contr_id: contribution.id).size > 1%>
+                        <%= Comment.where(contr_id: contribution.id).size%>
                         <a href=<%= contribution.id %>>comments</a>
+                      <% elsif Comment.where(contr_id: contribution.id).size == 0 %>
+                        <a href=<%= contribution.id %>>discuss</a>
                       <% else %>
+                        <%= Comment.where(contr_id: contribution.id).size%>
                         <a href=<%= contribution.id %>>comment</a>
                       <% end %>
                     </td>

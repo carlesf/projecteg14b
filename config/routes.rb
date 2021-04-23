@@ -1,10 +1,16 @@
 Rails.application.routes.draw do
+  resources :votes
+  
   resources :replies do
-    resources :replies
+    #resources :replies
+    put 'point', on: :member
+    put 'unvote', on: :member
   end
   
   resources :comments do
-    resources :replies
+    #resources :replies
+    put 'point', on: :member
+    put 'unvote', on: :member
   end
   
   resources :users 
@@ -13,12 +19,13 @@ Rails.application.routes.draw do
   
 
   resources :contributions do
-    resources :comments
+    #resources :comments
     collection do
       get 'newest'
       get 'ask'
     end
     put 'point', on: :member
+    put 'unvote', on: :member
     post 'comment', on: :member
 
   end

@@ -64,18 +64,29 @@
             <table class="fatitem" border="0">
               <tbody>
                 <tr class='athing' id=<%= @contribution.id %>>
-
                   <td valign="top" class="votelinks">
                     <center>
-
-                      <a id=<%= @contribution.id %>>
+                      <% if logged_in? %>
                         
-                        <div class='votearrow' title='upvote'>
-                          <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
-                        </div>
-
-                      </a>
-                      
+                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: @contribution.id).nil?) %>
+                          <b style='color:#ff6600;'>
+                           *
+                          </b>
+                          
+                        <% else %>
+                          <a>
+                            <div class='votearrow' title='upvote'>
+                              <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
+                            </div>
+                          </a>
+                        <% end %>
+  
+                      <% else %>
+                        <b style='color:#ff6600;'>
+                          *
+                        </b>
+                      <% end %>
+  
                     </center>
                   </td>
                   <td class="title">
@@ -93,11 +104,18 @@
                     <span class="age">
                       <%= distance_of_time_in_words(Time.now.minus_with_coercion(@contribution.created_at).round) %> ago
                     </span>
+                    <% if logged_in? && !(Vote.find_by(voter_id: current_user.id, votable_id: @contribution.id).nil?) %>
+                      |
+                      <%= link_to 'unvote', unvote_contribution_path(@contribution, :view => "show"), method: :put %>
+                    <% end %>
                     |
-                    <%= Comment.where(contr_id: @contribution.id).size%>
-                    <% if Comment.where(contr_id: @contribution.id).size > 1 || Comment.where(contr_id: @contribution.id).size == 0%>
+                    <% if Comment.where(contr_id: @contribution.id).size > 1%>
+                      <%= Comment.where(contr_id: @contribution.id).size%>
                       <a href=<%= @contribution.id %>>comments</a>
+                    <% elsif Comment.where(contr_id: @contribution.id).size == 0 %>
+                      <a href=<%= @contribution.id %>>discuss</a>
                     <% else %>
+                      <%= Comment.where(contr_id: @contribution.id).size%>
                       <a href=<%= @contribution.id %>>comment</a>
                     <% end %>
                   </td>
@@ -173,12 +191,27 @@
                     <tr>
                       <td valign="top" class="votelinks">
                         <center>
-                          <a id=<% comment.id %>>
-                            <!-- cal que s'arregli quan es fa el VOTE -->
-                            <div class='votearrow' title='upvote'>
-                              <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
-                            </div>
-                          </a>
+                          <% if logged_in? %>
+                          
+                            <% if !(Vote.find_by(voter_id: current_user.id, votable_id: comment.id).nil?) %>
+                              <b style='color:#ff6600;'>
+                               *
+                              </b>
+                            
+                            <% else %>
+                              <a>
+                                <div class='votearrow' title='upvote'>
+                                  <%= link_to '.', point_comment_path(comment, :view => 'show'), method: :put, :style => "opacity:0" %>
+                                </div>
+                              </a>
+                            <% end %>
+    
+                          <% else %>
+                            <b style='color:#ff6600;'>
+                              *
+                            </b>
+                          <% end %>
+    
                         </center>
                       </td>
                       
@@ -191,6 +224,11 @@
                             <span class="age">
                               <%= distance_of_time_in_words(Time.now.minus_with_coercion(comment.created_at).round) %> ago
                             </span>
+                            
+                            <% if logged_in? && !(Vote.find_by(voter_id: current_user.id, votable_id: comment.id).nil?) %>
+                              |
+                              <%= link_to 'unvote', unvote_comment_path(comment, :view => 'show'), method: :put %>
+                            <% end %>
     
                           </span>
                         </div>
@@ -222,12 +260,27 @@
                                 <tr>
                                   <td valign="top" class="votelinks">
                                     <center>
-                                      <a id=<% reply.id %>>
-                                        <!-- cal que s'arregli quan es fa el VOTE -->
-                                        <div class='votearrow' title='upvote'>
-                                          <%= link_to '.', point_contribution_path(@contribution, :view => "show"), method: :put, :style => "opacity:0" %>
-                                        </div>
-                                      </a>
+                                      <% if logged_in? %>
+                                      
+                                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: reply.id).nil?) %>
+                                          <b style='color:#ff6600;'>
+                                           *
+                                          </b>
+                                        
+                                        <% else %>
+                                          <a>
+                                            <div class='votearrow' title='upvote'>
+                                              <%= link_to '.', point_reply_path(reply, :view => 'show'), method: :put, :style => "opacity:0" %>
+                                            </div>
+                                          </a>
+                                        <% end %>
+                
+                                      <% else %>
+                                        <b style='color:#ff6600;'>
+                                          *
+                                        </b>
+                                      <% end %>
+                
                                     </center>
                                   </td>
                                   
@@ -240,6 +293,10 @@
                                         <span class="age">
                                           <%= distance_of_time_in_words(Time.now.minus_with_coercion(reply.created_at).round) %> ago
                                         </span>
+                                        <% if logged_in? && !(Vote.find_by(voter_id: current_user.id, votable_id: reply.id).nil?) %>
+                                          |
+                                          <%= link_to 'unvote', unvote_reply_path(reply, :view => 'show'), method: :put %>
+                                        <% end %>
                 
                                       </span>
                                     </div>

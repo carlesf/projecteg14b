@@ -1,5 +1,6 @@
 <% if logged_in? %>
 
+
   <html lang="en" op="newReply">
     <head>
       <meta name="referrer" content="origin">
@@ -37,14 +38,36 @@
               <table class="fatitem" border="0">
                 <tbody>
                   <tr class='athing'>
-  
                     <td valign="top" class="votelinks">
                       <center>
-  
-                        <!-- lo de votar -->
+                        <% if logged_in? %>
                         
+                          <% if !(Vote.find_by(voter_id: current_user.id, votable_id: params[:commentreply_id]).nil?) %>
+                            <b style='color:#ff6600;'>
+                             *
+                            </b>
+                          
+                          <% else %>
+                            <a> 
+                              <div class='votearrow' title='upvote'>
+                                <% if params[:r] %> 
+                                  <%= link_to '.', point_reply_path(Reply.find_by(id: params[:commentreply_id]), :r => 1, :contr => params[:contr], :view => 'newReply'), method: :put, :style => "opacity:0" %>
+                                <% else %>
+                                  <%= link_to '.', point_comment_path(Comment.find_by(id: params[:commentreply_id]), :view => 'newReply'), method: :put, :style => "opacity:0" %>
+                                <% end %>
+                              </div>
+                            </a>
+                          <% end %>
+  
+                        <% else %>
+                          <b style='color:#ff6600;'>
+                            *
+                          </b>
+                        <% end %>
+  
                       </center>
                     </td>
+                      
                     <td class="subtext">
                       <% if params[:r] %>
                         <a href="<%= users_path %>/<%= User.find_by(id: Reply.find_by(id: params[:commentreply_id]).user_id).id %>" class="hnuser"><%= User.find_by(id: Reply.find_by(id: params[:commentreply_id]).user_id).email %></a> 
@@ -58,8 +81,27 @@
                         <% else %>
                           <%= distance_of_time_in_words(Time.now.minus_with_coercion(Comment.find_by(id: params[:commentreply_id]).created_at).round) %> ago                       
                         <% end %>
-                        
                       </span>
+                      
+                      <% if logged_in? %>
+                        <% if params[:r] %>
+                        
+                          <% if !(Vote.find_by(voter_id: current_user.id, votable_id: Reply.find_by(id: params[:commentreply_id]).id).nil?) %>
+                            |
+                            <%= link_to 'unvote', unvote_reply_path(Reply.find_by(id: params[:commentreply_id]), :view => "newReply"), method: :put %>
+                          <% end %>
+                          
+                        <% else %>
+                        
+                          <% if !(Vote.find_by(voter_id: current_user.id, votable_id: Comment.find_by(id: params[:commentreply_id]).id).nil?) %>
+                            |
+                            <%= link_to 'unvote', unvote_comment_path(Comment.find_by(id: params[:commentreply_id]), :view => "newReply"), method: :put %>
+                          <% end %>
+
+                        
+                        <% end %>
+                              
+                      <% end %>
                       
                       |
                       <% if params[:r] %>

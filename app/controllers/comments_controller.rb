@@ -1,8 +1,67 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: %i[ show edit update destroy ]
+  before_action :set_comment, only: %i[ show edit update destroy point unvote]
   
-  def comments_nb
-    Comment.where(user_id: params[:user_id]).size
+# :view => 'newReply'
+  def point
+    @comment.points += 1
+    @comment.save
+          
+    Vote.create(votable_id: @comment.id, votable_type: 'comment', voter_id: current_user.id)
+    
+    respond_to do |format|
+      @view = params[:view]
+      if @view == 'newReply'
+        #MAL
+        #if params[:r]
+         # format.html { redirect_to '/replies/new?commentreply_id='+@comment.id.to_s+'&r=1&contr='+params[:contr].to_s }
+
+          
+        #else
+          # FUNCIONA !!!
+         # format.html { redirect_to '/replies/new?commentreply_id='+@comment.id.to_s }
+          
+        #end
+        
+        # pare = comment
+        format.html { redirect_to '/replies/new?commentreply_id='+@comment.id.to_s }
+
+        
+      else @view == 'show'
+        # FUNCIONA !!!
+        format.html { redirect_to Contribution.find_by(id: Contribution.find_by(id: @comment.contr_id)) }
+      end
+    end 
+  end
+
+
+
+  def unvote
+    @comment.points -= 1
+    @comment.save
+    
+    respond_to do |format|
+      @view = params[:view]
+      if @view == 'newReply'
+        #MAL
+=begin        if params[:r]
+          format.html { redirect_to '/replies/new?commentreply_id='+@comment.id.to_s+'&r=1&contr='+params[:contr].to_s }
+
+          
+        else
+          # FUNCIONA !!!
+          format.html { redirect_to '/replies/new?commentreply_id='+@comment.id.to_s }
+          
+        end
+=end        
+        format.html { redirect_to '/replies/new?commentreply_id='+@comment.id.to_s}
+      else @view == 'show'
+        # FUNCIONA !!!
+        format.html { redirect_to Contribution.find_by(id: Contribution.find_by(id: @comment.contr_id)) }
+      end
+    end 
+          
+    @vote = Vote.find_by(votable_id: @comment.id, votable_type: 'comment', voter_id: current_user.id)
+    @vote.destroy
   end
 
   # GET /comments or /comments.json
@@ -86,6 +145,6 @@ class CommentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def comment_params
-      params.require(:comment).permit(:content, :user_id, :contr_id)
+      params.require(:comment).permit(:content, :user_id, :contr_id, :contr)
     end
 end

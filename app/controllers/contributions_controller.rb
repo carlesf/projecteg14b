@@ -1,5 +1,5 @@
 class ContributionsController < ApplicationController
-  before_action :set_contribution, only: %i[ show edit update destroy point ]
+  before_action :set_contribution, only: %i[ show edit update destroy point unvote]
 
   # GET /contributions or /contributions.json
   def index
@@ -23,7 +23,9 @@ class ContributionsController < ApplicationController
   def point
     @contribution.points += 1
     @contribution.save
-    # aqui peta tot i que suma els punts
+          
+    Vote.create(votable_id: @contribution.id, votable_type: 'contribution', voter_id: current_user.id)
+    
     respond_to do |format|
       @view = params[:view]
       if @view == "index"
@@ -34,11 +36,32 @@ class ContributionsController < ApplicationController
         format.html { redirect_to ask_contributions_path }
       elsif @view == "show"
         format.html { redirect_to Contribution.find_by(id: @contribution.id) }
-
       end
     end 
   end
 
+  def unvote
+    @contribution.points -= 1
+    @contribution.save
+    
+    respond_to do |format|
+
+      @view = params[:view]
+      if @view == "index"
+        format.html { redirect_to contributions_path }
+      elsif @view == "newest" 
+        format.html { redirect_to newest_contributions_path }
+      elsif @view == "ask" 
+        format.html { redirect_to ask_contributions_path }
+      elsif @view == "show"
+        format.html { redirect_to Contribution.find_by(id: @contribution.id) }
+      end
+      
+    end
+          
+    @vote = Vote.find_by(votable_id: @contribution.id, votable_type: 'contribution', voter_id: current_user.id)
+    @vote.destroy
+  end
   
   # GET /contributions/1 or /contributions/1.json
   def show
