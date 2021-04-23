@@ -1,10 +1,6 @@
 class RepliesController < ApplicationController
   before_action :set_reply, only: %i[ show edit update destroy point unvote]
   
-  
-  #:r => 1, :contr => params[:contr], :view => 'newReply'
-  
-  
   def point
     Vote.create(votable_id: @reply.id, votable_type: 'reply', voter_id: current_user.id)
     
@@ -28,7 +24,7 @@ class RepliesController < ApplicationController
       @view = params[:view]
       if @view == 'newReply'
         # AQUEST
-        format.html { redirect_to '/replies/new?commentreply_id='+@reply.id.to_s+'&r=1&contr='+params[:contr].to_s }
+        format.html { redirect_to '/replies/new?commentreply_id='+@reply.id.to_s+'&r=1&contr='+(Contribution.find_by(id: Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id)).id).to_s }
       else @view == 'show'
         format.html { redirect_to Contribution.find_by(id: Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id).id) }      
       end

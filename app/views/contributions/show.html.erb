@@ -138,18 +138,18 @@
                       <br><br>  
                     <% end %>
                     <%= form_with(model: @comment, url: comments_path) do |form| %>
-                        <% if @comment.errors.any? %>
-                          <div id="error_explanation">
-                            <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
-                      
-                            <ul>
-                              <% @comment.errors.each do |error| %>
-                                <li><%= error.full_message %></li>
-                              <% end %>
-                            </ul>
-                          </div>
-                        <% end %>
-                      
+                      <% if @comment.errors.any? %>
+                        <div id="error_explanation">
+                          <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+                    
+                          <ul>
+                            <% @comment.errors.each do |error| %>
+                              <li><%= error.full_message %></li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      <% end %>
+                    
                       <table border="0">
                         <tr>
                           <td style="overflow:hidden;">
@@ -312,19 +312,27 @@
                                               </font>
                                         </div>
                                     </div>
-                                    <% end %> 
+                                    
                                   </td>
                                   
                                 </tr>
-
-                              <% end %> 
+                                
+                                <% end %>
                               </table>
+                              
                             </tr>
+                          <% end %>
+                          
                         </table>
+                        
                       </td>
+                      
                     </tr>
+                   
                   </table>
+                
                 </tr>
+              
             </table>
             
           </td>

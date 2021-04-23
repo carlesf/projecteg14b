@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_22_230245) do
+ActiveRecord::Schema.define(version: 2021_04_23_044408) do
 
   create_table "comments", force: :cascade do |t|
     t.text "content"
@@ -39,7 +39,6 @@ ActiveRecord::Schema.define(version: 2021_04_22_230245) do
     t.integer "commentreply_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "commentreply_type"
   end
 
   create_table "users", force: :cascade do |t|

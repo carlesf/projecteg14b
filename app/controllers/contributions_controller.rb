@@ -6,7 +6,10 @@ class ContributionsController < ApplicationController
     
     if params[:user_id]
       @contributions = Contribution.where(user_id: params[:user_id]).order(created_at: :desc)
-    else 
+    elsif params[:upvotedS]
+      @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
+      @contributions = Contribution.where(id: @votes)
+    else
       @contributions = Contribution.where(tipus: 'url').order(points: :desc)
     end
 

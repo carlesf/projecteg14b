@@ -44,6 +44,11 @@
                       |
                       <span class="topsel"><a href="/contributions?user_id=<%= params[:user_id] %>"><%= User.find_by(id: params[:user_id]).email %>'s submissions</a></span>
                     <% end %>
+                    
+                    <% if params[:upvotedS] %>
+                      |
+                      <span class="topsel"><a href="/contributions?upvotedS=1">upvoted submissions</a></span>
+                    <% end %>
                   </span>
                 </td>
                 <td style="text-align:right">
@@ -72,31 +77,34 @@
                 <% iteration += 1 %>
                 <tr class='athing' id=<%= contribution.id %>>
                   <td align="right" valign="top" class="title">
-                    <span class="rank"><%= iteration %></span>
+                    <span class="rank"><%= iteration %>.</span>
                   </td>
                   <td valign="top" class="votelinks">
                     <center>
-                      <% if logged_in? %>
-                      
-                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: contribution.id).nil?) %>
-                          <b style='color:#ff6600;'>
-                           *
-                          </b>
-                        
+                      <% if !params[:upvotedS] %>
+                        <% if logged_in? %>
+                          <% if !(Vote.find_by(voter_id: current_user.id, votable_id: contribution.id).nil?) %>
+                            <b style='color:#ff6600;'>
+                             *
+                            </b>
+                          
+                          <% else %>
+                            <a>
+                              <div class='votearrow' title='upvote'>
+                                <%= link_to '.', point_contribution_path(contribution, :view => "index"), method: :put, :style => "opacity:0" %>
+                              </div>
+                            </a>
+                          <% end %>
+                          
                         <% else %>
-                          <a>
-                            <div class='votearrow' title='upvote'>
-                              <%= link_to '.', point_contribution_path(contribution, :view => "index"), method: :put, :style => "opacity:0" %>
-                            </div>
-                          </a>
+  
+                          <b style='color:#ff6600;'>
+                            *
+                          </b>
+                          
                         <% end %>
-
-                      <% else %>
-                        <b style='color:#ff6600;'>
-                          *
-                        </b>
+                      
                       <% end %>
-
                     </center>
                   </td>
                   <td class="title">
