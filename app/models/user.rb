@@ -4,7 +4,8 @@ class User < ApplicationRecord
     User.find_or_create_by(uid: response[:uid]) do |u|
       #u.username = response[:info][:name]
       u.email = response[:info][:email]
-      u.about = "testing"
+      u.about = ""
+      u.uid = response[:uid]
     end
   end
   
