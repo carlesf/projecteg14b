@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     collection do
       get 'newest'
       get 'ask'
+      get 'url'
     end
     put 'point', on: :member
     put 'unvote', on: :member

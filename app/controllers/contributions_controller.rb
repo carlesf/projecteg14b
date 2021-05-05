@@ -1,5 +1,5 @@
 class ContributionsController < ApplicationController
-  before_action :set_contribution, only: %i[ show edit update destroy point unvote]
+  before_action :set_contribution, only: %i[ show edit update destroy point unvote url ask]
 
   # GET /contributions or /contributions.json
   def index
@@ -19,8 +19,15 @@ class ContributionsController < ApplicationController
     @contributions = Contribution.all.order(created_at: :desc)
   end
   
+  def url
+    @contributions = Contribution.where(tipus: 'url').order(points: :desc)
+    respond_to do |format|
+      format.json { render json: @contributions}
+    end
+  end
+  
   def ask
-    @contributions = Contribution.all.order(points: :desc)
+    @contributions = Contribution.where(tipus: 'ask').order(points: :desc)
   end
   
   def point

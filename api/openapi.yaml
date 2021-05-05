@@ -1,0 +1,256 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: Hacker News (ProjecteG14B)
+  description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
+servers:
+  - url: 'https://hackernews-projecteg14b.herokuapp.com/'
+  - url: 'http://35.172.231.221:8080'
+paths:
+  /contributions:
+    get:
+        tags:
+        - contributions
+        summary: Retrieves all the Contributions of type URL ordered by points
+        operationId: getAllURLContributions
+        responses:
+          200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Contribution'
+                    
+    post:
+      tags:
+      - tweets
+      summary: Adds a new Tweet to the Wall of Tweets
+      operationId: addTweet
+      requestBody:
+        description: Provide the author & content of the new Tweet
+        content:
+          application/json:
+            schema:
+              required:
+              - author
+              - content
+              type: object
+              properties:
+                author:
+                  type: string
+                  minLength: 4
+                  example: 'My name'
+                content:
+                  type: string
+                  minLength: 4
+                  maxLength: 280
+                  example: 'My content'
+        required: true
+      responses:
+        201:
+          description: Tweet created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddTweetResult'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+  /tweets/{tweetId}:
+    get:
+      tags:
+      - tweets
+      summary: Finds a Tweet by its ID
+      description: Returns a single Tweet
+      operationId: getTweetById
+      parameters:
+      - name: tweetId
+        in: path
+        description: ID of Tweet to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contribution'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+    delete:
+      tags:
+      - tweets
+      summary: Deletes a Tweet
+      operationId: deleteTweet
+      parameters:
+      - name: tweetId
+        in: path
+        description: Tweet id to delete
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: Tweet deleted
+          content:
+            application/json: {}
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+      security:
+      - ApiKeyAuth: []
+  /tweets/{tweetId}/likes:
+    post:
+      tags:
+      - tweets
+      summary: Likes a Tweet
+      operationId: likeTweet
+      parameters:
+      - name: tweetId
+        in: path
+        description: Tweet id to like
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Liked Tweet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contribution'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+components:
+  schemas:
+    Contribution:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          minLength: 1
+          example: 'Contribution title'
+        type:
+          type: string
+          example: 'url'
+        url:
+          type: string
+          format: url
+          nullable: true
+          example: 'https://www.contribution-url.com'
+        text:
+          type: string
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          format: date-time
+        points:
+          type: integer
+          example: 0
+        user_id:
+          type: integer
+          example: 1
+        user_email:
+          type: string
+          format: email
+          example: 'user@email.com'
+    AddTweetResult:
+      type: object
+      properties:
+        new_tweet:
+          $ref: '#/components/schemas/Contribution'
+        api_key:
+          type: string
+          example: "MjAyMC0wNC0xOCAxMjoyODo0MSBVVEM=\n"
+    ErrorResult:
+      type: object
+      properties:
+        status:
+          type: integer
+          enum: [400, 401, 403, 404, 409]
+        error: 
+          type: string
+          enum: ["Bad Request", "Unauthorized", "Forbidden", "Not Found", "Conflict"]
+        message: 
+          type: string
+  examples:
+    error400:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Content is too long (maximum is 280 characters)"
+    error401:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "You provided no api key (X-API-KEY Header)"
+    error403:
+      value:
+        status: 403
+        error: "Forbidden"
+        message: "Your api key (X-API-KEY Header) is not valid"
+    error404:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No Tweet with that ID"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: X-API-KEY #Custom headers in rails apps must have the X- prefix
+      in: header
