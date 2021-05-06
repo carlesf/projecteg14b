@@ -1,5 +1,5 @@
 class ContributionsController < ApplicationController
-  before_action :set_contribution, only: %i[ show edit update destroy point unvote url ask]
+  before_action :set_contribution, only: %i[ show edit update destroy point unvote ]
 
   # GET /contributions or /contributions.json
   def index
