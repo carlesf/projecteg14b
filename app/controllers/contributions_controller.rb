@@ -3,27 +3,32 @@ class ContributionsController < ApplicationController
 
   # GET /contributions or /contributions.json
   def index
-    
-    if params[:user_id]
-      @contributions = Contribution.where(user_id: params[:user_id]).order(created_at: :desc)
-    elsif params[:upvotedS]
-      @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
-      @contributions = Contribution.where(id: @votes)
-    else
-      @contributions = Contribution.where(tipus: 'url').order(points: :desc)
+    respond_to do |format|
+      if params[:user_id]
+        @contributions = Contribution.where(user_id: params[:user_id]).order(created_at: :desc)
+        format.html { @contributions }
+      elsif params[:upvotedS]
+        @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
+        @contributions = Contribution.where(id: @votes)
+        format.html { @contributions }
+      elsif params[:type] == 'all'
+        @contributions = Contribution.all.order(created_at: :desc)
+        format.html { @contributions }
+        format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+      elsif params[:type] == 'ask'
+        @contributions = Contribution.where(tipus: 'ask').order(points: :desc)
+        format.html { @contributions }
+        format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+      else  # params[:type] == 'url'
+        @contributions = Contribution.where(tipus: 'url').order(points: :desc)
+        format.html { @contributions }
+        format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+      end
     end
-
   end
   
   def newest
     @contributions = Contribution.all.order(created_at: :desc)
-  end
-  
-  def url
-    @contributions = Contribution.where(tipus: 'url').order(points: :desc)
-    respond_to do |format|
-      format.json { render json: @contributions}
-    end
   end
   
   def ask

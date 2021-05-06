@@ -5,14 +5,22 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://35.172.231.221:8080'
+  - url: 'http://3.238.6.247:8080'
 paths:
   /contributions:
     get:
         tags:
         - contributions
-        summary: Retrieves all the Contributions of type URL ordered by points
+        summary: Retrieves all the Contributions ordered by points (if type is url or ask) or by creation (if type is all)
         operationId: getAllURLContributions
+        parameters:
+        - name: type
+          in: query
+          description: Contribution type to filter
+          required: true
+          schema:
+            type: string
+            enum: [all, url, ask]
         responses:
           200:
             description: successful operation
@@ -22,7 +30,6 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/Contribution'
-                    
     post:
       tags:
       - tweets
@@ -184,9 +191,6 @@ components:
           type: string
           minLength: 1
           example: 'Contribution title'
-        type:
-          type: string
-          example: 'url'
         url:
           type: string
           format: url
@@ -195,20 +199,23 @@ components:
         text:
           type: string
           nullable: true
-          example: null
+          example: ''
         created_at:
           type: string
           format: date-time
+        tipus:
+          type: string
+          example: 'url'
         points:
           type: integer
           example: 0
-        user_id:
-          type: integer
-          example: 1
-        user_email:
+        user:
           type: string
           format: email
           example: 'user@email.com'
+        user_id:
+          type: integer
+          example: 1
     AddTweetResult:
       type: object
       properties:
