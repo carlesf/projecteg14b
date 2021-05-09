@@ -6,62 +6,76 @@ info:
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
   - url: 'http://3.238.6.247:8080'
+  - url: 'http://54.90.45.71:8080'
+  - url: 'http://3.88.132.33:8080'
 paths:
   /contributions:
     get:
-        tags:
-        - contributions
-        summary: Retrieves all the Contributions ordered by points (if type is url or ask) or by creation (if type is all)
-        operationId: getAllURLContributions
-        parameters:
-        - name: type
-          in: query
-          description: Contribution type to filter
-          required: true
-          schema:
-            type: string
-            enum: [all, url, ask]
-        responses:
-          200:
-            description: successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Contribution'
+      tags:
+      - contributions
+      summary: Retrieves all the Contributions ordered by points (if type is url or ask) or by creation (if type is all)
+      operationId: getAllURLContributions
+      parameters:
+      - name: type
+        in: query
+        description: Contribution type to filter
+        required: true
+        schema:
+          type: string
+          enum: [all, url, ask]
+      - name: user_id
+        in: query
+        description: Contains the id of the User whose Contributions we want to see.
+        schema:
+          type: integer
+      - name: upvotedS
+        in: query
+        description: Equals 1 when we want to see the upvoted Contributions of the logged in User.
+        schema:
+          type: integer
+          
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contribution'
+    
     post:
       tags:
-      - tweets
-      summary: Adds a new Tweet to the Wall of Tweets
-      operationId: addTweet
+      - contributions
+      summary: Adds a new Contribution to our version of HackerNews. If the new Contribution has an url its type will be 'url'. If the url field is empty the new Contribution type will be 'ask'.
+      operationId: sumbitContribution
       requestBody:
-        description: Provide the author & content of the new Tweet
+        description: Provide the title of the new Contribution
         content:
           application/json:
             schema:
               required:
-              - author
-              - content
+              - title
               type: object
               properties:
-                author:
+                title:
                   type: string
-                  minLength: 4
-                  example: 'My name'
-                content:
+                  minLength: 1
+                  example: 'Exemple title'
+                url:
                   type: string
-                  minLength: 4
-                  maxLength: 280
-                  example: 'My content'
+                  example: 'https://editor.swagger.io/#'
+                text:
+                  type: string
+                  example: 'This is a text'
         required: true
       responses:
         201:
-          description: Tweet created
+          description: Contribution created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddTweetResult'
+                $ref: '#/components/schemas/AddContributionResult'
         400:
           description: 'Error: Bad Request'
           content:
@@ -216,10 +230,10 @@ components:
         user_id:
           type: integer
           example: 1
-    AddTweetResult:
+    AddContributionResult:
       type: object
       properties:
-        new_tweet:
+        new_contribution:
           $ref: '#/components/schemas/Contribution'
         api_key:
           type: string

@@ -2,15 +2,18 @@ class ContributionsController < ApplicationController
   before_action :set_contribution, only: %i[ show edit update destroy point unvote ]
 
   # GET /contributions or /contributions.json
+  #Falta user_id i upvotedS -------------------------------------------------------
   def index
     respond_to do |format|
       if params[:user_id]
         @contributions = Contribution.where(user_id: params[:user_id]).order(created_at: :desc)
         format.html { @contributions }
+        format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
       elsif params[:upvotedS]
         @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
         @contributions = Contribution.where(id: @votes)
         format.html { @contributions }
+        format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
       elsif params[:type] == 'all'
         @contributions = Contribution.all.order(created_at: :desc)
         format.html { @contributions }
@@ -111,8 +114,9 @@ class ContributionsController < ApplicationController
           @contribution.text = ""
           @contribution.save
         end
+        #No sabem fer-ho XD-----------------------------------------------------------------------------------
         format.html { redirect_to newest_contributions_path, notice: "Contribution was successfully created." }
-        format.json { render :show, status: :created, location: @contribution }
+        format.json { render :newest, status: :created, location: @contribution }
         
       else
         if @contribution.title.blank?
