@@ -6,73 +6,74 @@ info:
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
   - url: 'http://3.93.33.221:8080'
+  - url: 'http://3.82.219.165:8080'
 paths:
   /contributions:
     get:
-        tags:
-        - contributions
-        summary: Retrieves all the Contributions ordered by points (if type is url or ask) or by creation (if type is all)
-        operationId: getAllURLContributions
-        parameters:
-        - name: type
-          in: query
-          description: Contribution type to filter
-          required: false
-          schema:
-            type: string
-            enum: [all, url, ask]
-        - name: user_id
-          in: query
-          description: Contribution user to filter
-          schema:
-            type: integer
-        - name: upvotedS
-          in: query
-          description: User to look for upvoted contributions
-          schema:
-            type: integer
-        responses:
-          200:
-            description: successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Contribution'
-          404:
-            description: 'Error: Not Found'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResult'
-                examples:
-                  errorUserExample:
-                    $ref: '#/components/examples/error404User'
-          401:
-            description: 'Error: Unauthorized'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResult'
-                examples:
-                  errorMissingAuthenticationExample:
-                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
-                  errorIncorrectAuthenticationExample:
-                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
-          403:
-            description: 'Error: Forbidden'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResult'
-                examples:
-                  errorPrivilegeNotGrantedExample:
-                    $ref: '#/components/examples/error403Forbidden'
+      tags:
+      - contributions
+      summary: Retrieves all the Contributions ordered by points (if type is url or ask) or by creation (if type is all)
+      operationId: getAllURLContributions
+      parameters:
+      - name: type
+        in: query
+        description: Contribution type as filter
+        required: false
+        schema:
+          type: string
+          enum: [all, url, ask]
+      - name: user_id
+        in: query
+        description: Contribution author as filter
+        schema:
+          type: integer
+      - name: upvotedS
+        in: query
+        description: Upvoted Contributions of logged in User
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contribution'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorUserExample:
+                  $ref: '#/components/examples/error404User'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorMissingAuthenticationExample:
+                  $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                errorIncorrectAuthenticationExample:
+                  $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorPrivilegeNotGrantedExample:
+                  $ref: '#/components/examples/error403Forbidden'
                     
     post:
       tags:
-      - tweets
+      - MAL
       summary: Adds a new Tweet to the Wall of Tweets
       operationId: addTweet
       requestBody:
@@ -111,6 +112,107 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error400'
+                  
+                  
+  /contributions/newest:
+    get:
+      tags:
+      - contributions
+      summary: Retrieves all the Contributions ordered by creation date
+      operationId: getAllContributions
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contribution'
+  
+  /contributions/ask:
+    get:
+      tags:
+      - contributions
+      summary: Retrieves all the 'ask' Contributions ordered by points
+      operationId: getAsks
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contribution'
+
+  /contributions/{contributionId}:
+    get:
+      tags:
+      - contributions
+      summary: Finds a Contribution by its ID
+      operationId: getContributionById
+      parameters:
+      - name: contributionId
+        in: path
+        description: ID of Contribution to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contribution'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+                  
+  /comments:
+    get:
+      tags:
+      - comments
+      summary: Retrieves all the Comments of the logged in User
+      operationId: getThreads
+      parameters:
+      - name: threads
+        in: query
+        description: Indicates that we want to see the threads
+        schema:
+          type: boolean
+      - name: user_id
+        in: query
+        description: Id of the User whose Comments we want to see
+        schema:
+          type: integer
+      - name: upvotedC
+        in: query
+        description: Upvoted Comments of logged in User
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+                  
+                  
+                  
+                  
+  
   /tweets/{tweetId}:
     get:
       tags:
@@ -219,6 +321,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+                  
 components:
   schemas:
     Contribution:
@@ -255,7 +358,28 @@ components:
           example: 'user@email.com'
         user_id:
           type: integer
+          example: 2
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        content:
+          type: string
+          example: 'This is a comment.'
+        user_id:
+          type: integer
+          example: 2
+        contr_id:
+          type: integer
           example: 1
+        created_at:
+          type: string
+          format: date-time
+        points:
+          type: integer
+          example: 0
     AddTweetResult:
       type: object
       properties:
@@ -296,8 +420,7 @@ components:
         status: 403
         error: "Forbidden"
         message: "Privilege not granted"
-  
-  
+
     error400:
       value:
         status: 400
@@ -317,11 +440,11 @@ components:
       value:
         status: 404
         error: "Not Found"
-        message: "No Tweet with that ID"
+        message: "No Contribution with that ID"
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       name: X-API-KEY #Custom headers in rails apps must have the X- prefix
       in: header
 security:
-  - ApiKeyAuth: []
+  - ApiKeyAuth: ["101999457813725948327"]

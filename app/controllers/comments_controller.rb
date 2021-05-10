@@ -38,17 +38,55 @@ class CommentsController < ApplicationController
 
   # GET /comments or /comments.json
   def index
-    
-    if params[:user_id]
-      @comments = Comment.where(user_id: params[:user_id]).order(created_at: :desc)
-      
-    elsif params[:upvotedC]
-      @votes = Vote.where(voter_id: current_user.id, votable_type: 'comment').select(:votable_id)
+    respond_to do |format|
 
-      @comments = Comment.where(id: @votes)
-      
-    elsif params[:threads]
-      @comments = Comment.all
+      if params[:user_id]
+        
+        @user = User.where(id: params[:user_id])
+        
+        
+          if @user.empty?
+            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No User with that user_id"}, :status => 404 }
+          else
+            @comments = Comment.where(user_id: params[:user_id])
+            format.html { @comments }
+            format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at, :points]) }
+          end
+  
+  
+      elsif params[:upvotedC]
+        
+        if request.headers['X-API-KEY']
+          @apikey = request.headers['X-API-KEY']
+          if !User.where(uid: @apikey).empty?
+            @user = User.find_by(uid: @apikey)
+            if params[:upvotedC]
+              @votes = Vote.where(voter_id: @user.id, votable_type: 'comment').select(:votable_id)
+              @comments = Comment.where(id: @votes)
+              format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at, :points]) }
+            else
+              format.json { render :json => {:status => 403, :error => "Forbidden", :message => "Privilege not granted"}, :status => 403 }
+            end
+          else
+            format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
+          end
+        else
+          format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+          if !current_user.nil?
+            @votes = Vote.where(voter_id: current_user.id, votable_type: 'comment').select(:votable_id)
+            @comments = Comment.where(id: @votes)
+            format.html { @comments }
+          end
+        end
+        
+      elsif params[:threads]
+        # no se com mirar si esta logged / quin es el logged
+        @comments = Comment.where(user_id: current_user.id)
+        format.html { @comments }
+        format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at, :points]) }
+        
+      end
+    
     end
     
   end

@@ -19,6 +19,7 @@ class ContributionsController < ApplicationController
           @apikey = request.headers['X-API-KEY']
           if !User.where(uid: @apikey).empty?
             @user = User.find_by(uid: @apikey)
+            # aquest if ??
             if params[:upvotedS].to_s == @user.id.to_s
               @votes = Vote.where(voter_id: @user.id, votable_type: 'contribution').select(:votable_id)
               @contributions = Contribution.where(id: @votes)
@@ -53,12 +54,22 @@ class ContributionsController < ApplicationController
     end
   end
   
+  # GET /contributions/newest
   def newest
     @contributions = Contribution.all.order(created_at: :desc)
+    respond_to do |format|
+      format.html { @contributions }
+      format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+    end
   end
   
+  # GET /contributions/ask
   def ask
     @contributions = Contribution.where(tipus: 'ask').order(points: :desc)
+    respond_to do |format|
+      format.html { @contributions }
+      format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+    end
   end
   
   def point
@@ -106,8 +117,20 @@ class ContributionsController < ApplicationController
   
   # GET /contributions/1 or /contributions/1.json
   def show
-    #@contribution = Contribution.find(params[:id])
+    @contribution = Contribution.find(params[:id])
     @comment = Comment.new
+    
+    respond_to do |format|
+      format.html { @contribution }
+      
+      if Contribution.find(params[:id]).nil?
+        format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Contribution with that ID"}, :status => 404 }
+      else
+        format.json { render json: @contribution.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+      end
+      
+    end
+    
   end
 
   # GET /contributions/new
