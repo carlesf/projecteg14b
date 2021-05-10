@@ -5,7 +5,7 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://3.228.12.251:8080'
+  - url: 'http://3.93.33.221:8080'
 paths:
   /contributions:
     get:
@@ -26,13 +26,11 @@ paths:
           description: Contribution user to filter
           schema:
             type: integer
-            
         - name: upvotedS
           in: query
-          description: Equals 1 when we want to see the upvoted Contributions of the logged in User.
+          description: User to look for upvoted contributions
           schema:
             type: integer
-            
         responses:
           200:
             description: successful operation
@@ -49,8 +47,29 @@ paths:
                 schema:
                   $ref: '#/components/schemas/ErrorResult'
                 examples:
-                  errorExample:
+                  errorUserExample:
                     $ref: '#/components/examples/error404User'
+          401:
+            description: 'Error: Unauthorized'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorMissingAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                  errorIncorrectAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+          403:
+            description: 'Error: Forbidden'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorPrivilegeNotGrantedExample:
+                    $ref: '#/components/examples/error403Forbidden'
+                    
     post:
       tags:
       - tweets
@@ -262,6 +281,21 @@ components:
         status: 404
         error: "Not Found"
         message: "No User with that user_id"
+    error401UnauthorizedMissingAuthentication:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "Missing authentication"
+    error401UnauthorizedIncorrectAuthentication:
+      value:
+        status: 401
+        error: "Unauthorized"
+        message: "Incorrect authentication"
+    error403Forbidden:
+      value:
+        status: 403
+        error: "Forbidden"
+        message: "Privilege not granted"
   
   
     error400:
@@ -289,3 +323,5 @@ components:
       type: apiKey
       name: X-API-KEY #Custom headers in rails apps must have the X- prefix
       in: header
+security:
+  - ApiKeyAuth: []

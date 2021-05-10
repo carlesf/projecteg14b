@@ -8,7 +8,6 @@ class ContributionsController < ApplicationController
       if params[:user_id]
         @user = User.where(id: params[:user_id])
         if @user.empty?
-          #format.json { render :json => :errors => 'pepito', :status => :notfound }
           format.json { render :json => {:status => 404, :error => "Not Found", :message => "No User with that user_id"}, :status => 404 }
         else
           @contributions = Contribution.where(user_id: params[:user_id]).order(created_at: :desc)
@@ -16,10 +15,28 @@ class ContributionsController < ApplicationController
           format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
         end
       elsif params[:upvotedS]
-        @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
-        @contributions = Contribution.where(id: @votes)
-        format.html { @contributions }
-        format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+        if request.headers['X-API-KEY']
+          @apikey = request.headers['X-API-KEY']
+          if !User.where(uid: @apikey).empty?
+            @user = User.find_by(uid: @apikey)
+            if params[:upvotedS].to_s == @user.id.to_s
+              @votes = Vote.where(voter_id: @user.id, votable_type: 'contribution').select(:votable_id)
+              @contributions = Contribution.where(id: @votes)
+              format.json { render json: @contributions.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }
+            else
+              format.json { render :json => {:status => 403, :error => "Forbidden", :message => "Privilege not granted"}, :status => 403 }
+            end
+          else
+            format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
+          end
+        else
+          format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+          if !current_user.nil?
+            @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
+            @contributions = Contribution.where(id: @votes)
+            format.html { @contributions }
+          end
+        end
       elsif params[:type] == 'all'
         @contributions = Contribution.all.order(created_at: :desc)
         format.html { @contributions }
