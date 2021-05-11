@@ -124,6 +124,7 @@ class ContributionsController < ApplicationController
       format.html { @contribution }
       
       if Contribution.find(params[:id]).nil?
+        #No funciona
         format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Contribution with that ID"}, :status => 404 }
       else
         format.json { render json: @contribution.to_json(only: [:id, :title, :tipus, :url, :text, :created_at, :points, :user_id, :user]) }

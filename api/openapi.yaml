@@ -7,6 +7,7 @@ servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
   - url: 'http://3.93.33.221:8080'
   - url: 'http://3.82.219.165:8080'
+  - url: 'http://34.207.253.114:8080' 
 paths:
   /contributions:
     get:
@@ -177,6 +178,40 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error404'
                   
+                  
+                  
+  /users:
+    get:
+      tags:
+      - user
+      summary: Finds a User by its ID
+      operationId: getUserbyId
+      parameters:
+      - name: user_id
+        in: query
+        description: ID of User to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404user'
+                  
   /comments:
     get:
       tags:
@@ -324,6 +359,25 @@ paths:
                   
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        about:
+          type: string
+          example: Text About
+        email:
+          type: string
+          example: example@gmail.com
+        created_at:
+          type: string
+          format: date-time
+        uid:
+          type: string
+          example: 115340955855334215894
+
     Contribution:
       type: object
       properties:
@@ -441,6 +495,11 @@ components:
         status: 404
         error: "Not Found"
         message: "No Contribution with that ID"
+    error404user:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "User with that user_id not found"
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
