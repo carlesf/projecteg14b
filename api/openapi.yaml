@@ -5,7 +5,7 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://34.201.55.134:8080'
+  - url: 'http://18.205.6.58:8080'
 paths:
   /contributions:
     get:
@@ -197,6 +197,68 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404User'
+    put:
+      tags:
+      - users
+      summary: Update a User of the HackerNews
+      operationId: updateUser
+      parameters:
+      - name: userId
+        in: path
+        description: ID of User to update
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Provide the about of the User
+        content:
+          application/json:
+            schema:
+              required:
+              - about
+              type: object
+              properties:
+                about:
+                  type: string
+                  nullable: true
+                  example: 'User about'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+            description: 'Error: Unauthorized'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorMissingAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                  errorIncorrectAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+        403:
+            description: 'Error: Forbidden'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorPrivilegeNotGrantedExample:
+                    $ref: '#/components/examples/error403Forbidden'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404User'
                   
   
   /tweets/{tweetId}:
@@ -353,7 +415,7 @@ components:
           example: 1
         about:
           type: string
-          example: Text About
+          example: User about
         email:
           type: string
           example: example@gmail.com

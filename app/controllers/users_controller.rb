@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
 
   # GET /users or /users.json
@@ -58,12 +59,36 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1 or /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: "User was successfully updated." }
-        format.json { render :show, status: :ok, location: @user }
+      if !User.where(id: params[:id]).empty?
+        if request.headers['X-API-KEY']
+          @apikey = request.headers['X-API-KEY']
+          if !User.where(uid: @apikey).empty?
+            @user = User.find_by(uid: @apikey)
+            if @user.id.to_s == params[:id].to_s
+              if @user.update(user_params)
+                format.json { render json: @user.to_json(only: [:id, :about, :email, :created_at, :uid]) }  
+              else
+                format.json { render json: @user.errors, status: :unprocessable_entity }
+              end
+            else
+              format.json { render :json => {:status => 403, :error => "Forbidden", :message => "Privilege not granted"}, :status => 403 }
+            end
+          else
+            format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
+          end
+        else
+          if !current_user.nil?
+            if @user.update(user_params)
+              format.html { redirect_to @user, notice: "User was successfully updated." }
+            else
+              format.html { render :edit, status: :unprocessable_entity }
+            end
+          else
+            format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+          end
+        end
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.json { render :json => {:status => 404, :error => "Not Found", :message => "No user with that user_id"}, :status => 404 }
       end
     end
   end

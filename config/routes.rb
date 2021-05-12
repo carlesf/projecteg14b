@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   post '/contributions' => 'contributions#create'
   
   get '/users/:id' => 'users#show'
+  put '/users/:id' => 'users#update'
   
   
   
