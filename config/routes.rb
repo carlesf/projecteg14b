@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get '/contributions/:id' => 'contributions#show'
   post '/contributions' => 'contributions#create'
   
+  get '/users/:id' => 'users#show'
+  
   
   
   resources :votes

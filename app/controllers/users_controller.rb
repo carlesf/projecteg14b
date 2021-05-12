@@ -5,30 +5,28 @@ class UsersController < ApplicationController
   # GET /users or /users.json
   def index
     @users = User.all
-
-    respond_to do |format|
-      format.html { @user }
-      if User.exists?(params[:user_id])
-          @user = User.find(params[:user_id])
-          if request.headers['X-API-KEY']
-            @apikey = request.headers['X-API-KEY'] 
-            if @user == User.find_by(uid: @apikey)
-            format.json { render json: @user.to_json(only: [:id, :about, :email,:created_at,:uid]) }  
-            else
-            format.json { render json: @user.to_json(only: [:id, :about, :email,:created_at,:uid => ""]) }
-            end
-          else
-            format.json { render json: @user.to_json(only: [:id, :about, :email,:created_at,:uid => ""])}
-          end
-      else
-        format.json { render :json => {:status => 404, :error => "Not Found", :message => "User with user_id " + params[:user_id].to_s + " not found"}, :status => 404 }
-      end
-    end
   end
 
   # GET /users/1 or /users/1.json
   def show
-  
+    respond_to do |format|
+      format.html { @user }
+      if !User.where(id: params[:id]).empty?
+          @user = User.find(params[:id])
+          if request.headers['X-API-KEY']
+            @apikey = request.headers['X-API-KEY'] 
+            if @user == User.find_by(uid: @apikey)
+            format.json { render json: @user.to_json(only: [:id, :about, :email, :created_at, :uid]) }  
+            else
+            format.json { render json: @user.to_json(only: [:id, :about, :email, :created_at, :uid => ""]) }
+            end
+          else
+            format.json { render json: @user.to_json(only: [:id, :about, :email, :created_at, :uid => ""])}
+          end
+      else
+        format.json { render :json => {:status => 404, :error => "Not Found", :message => "No user with that user_id"}, :status => 404 }
+      end
+    end
   end
 
   
@@ -82,7 +80,9 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      if !User.where(id: params[:id]).empty?
+        @user = User.find(params[:id])
+      end
     end
 
     # Only allow a list of trusted parameters through.
