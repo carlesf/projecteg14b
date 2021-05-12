@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
   # RESTful Web Service (Resource API)
   get '/contributions' => 'contributions#index'
+  get '/contributions/ask' => 'contributions#ask'
+  get '/contributions/newest' => 'contributions#newest'
+  get '/contributions/new' => 'contributions#new'
+  get '/contributions/:id' => 'contributions#show'
+  post '/contributions' => 'contributions#create'
+  
+  
   
   resources :votes
   
