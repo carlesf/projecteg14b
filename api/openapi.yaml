@@ -5,14 +5,14 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://18.205.6.58:8080'
+  - url: 'http://3.235.7.145:8080'
 paths:
   /contributions:
     get:
         tags:
         - contributions
-        summary: Retrieves all the Contributions ordered by points (if type is url or ask) or by creation (if type is all)
-        operationId: getAllURLContributions
+        summary: Retrieves all the Contributions of type url (ordered by points), of type ask (ordered by points), of type all (ordered by creation), created by one user or voted by one user
+        operationId: getContributions
         parameters:
         - name: type
           in: query
@@ -259,7 +259,65 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404User'
-                  
+  /comments:
+    get:
+        tags:
+        - comments
+        summary: Retrieves all the Comments created by one user (ordered by creation) or voted by one user
+        operationId: getComments
+        parameters:
+        - name: user_id
+          in: query
+          description: Comment user to filter
+          schema:
+            type: integer
+        - name: upvotedC
+          in: query
+          description: User to look for upvoted comments
+          schema:
+            type: integer
+        responses:
+          200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Comment'
+          404:
+            description: 'Error: Not Found'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorUserExample:
+                    $ref: '#/components/examples/error404User'
+                    
+                    
+          401:
+            description: 'Error: Unauthorized'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorMissingAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                  errorIncorrectAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+          403:
+            description: 'Error: Forbidden'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorPrivilegeNotGrantedExample:
+                    $ref: '#/components/examples/error403Forbidden'
+                    
+                    
   
   /tweets/{tweetId}:
     get:
@@ -406,7 +464,6 @@ components:
         user_id:
           type: integer
           example: 1
-    
     User:
       type: object
       properties:
@@ -425,6 +482,25 @@ components:
         uid:
           type: string
           example: 115340955855334215894
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          minLength: 1
+          example: 'Comment content'
+        user_id:
+          type: integer
+          example: 2
+        contr_id:
+          type: integer
+          example: 3
+        created_at:
+          type: string
+          format: date-time
     
     AddTweetResult:
       type: object

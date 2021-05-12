@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get '/users/:id' => 'users#show'
   put '/users/:id' => 'users#update'
   
+  get '/comments' => 'comments#index'
+  
   
   
   resources :votes
