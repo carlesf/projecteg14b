@@ -48,18 +48,34 @@ class CommentsController < ApplicationController
           format.html { @comments }
           format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at]) }
         end
-        
-        
-    
-        
-        
-        
-        
       elsif params[:upvotedC]
-        @votes = Vote.where(voter_id: current_user.id, votable_type: 'comment').select(:votable_id)
-  
-        @comments = Comment.where(id: @votes)
-        format.html { @comments }
+        if !User.where(id: params[:upvotedC]).empty?
+          if request.headers['X-API-KEY']
+            @apikey = request.headers['X-API-KEY']
+            if !User.where(uid: @apikey).empty?
+              @user = User.find_by(uid: @apikey)
+              if params[:upvotedC].to_s == @user.id.to_s
+                @votes = Vote.where(voter_id: @user.id, votable_type: 'comment').select(:votable_id)
+                @comments = Comment.where(id: @votes)
+                format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at]) }
+              else
+                format.json { render :json => {:status => 403, :error => "Forbidden", :message => "Privilege not granted"}, :status => 403 }
+              end
+            else
+              format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
+            end
+          else
+            format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+            if !current_user.nil?
+              @votes = Vote.where(voter_id: current_user.id, votable_type: 'comment').select(:votable_id)
+              @comments = Comment.where(id: @votes)
+              format.html { @comments }
+            end
+          end
+          
+        else
+          format.json { render :json => {:status => 404, :error => "Not Found", :message => "No user with that user_id"}, :status => 404 }
+        end
         
       elsif params[:threads]
         @comments = Comment.all
