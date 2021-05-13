@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_22_230245) do
+ActiveRecord::Schema.define(version: 2021_05_13_135611) do
 
   create_table "comments", force: :cascade do |t|
     t.text "content"
@@ -27,10 +27,10 @@ ActiveRecord::Schema.define(version: 2021_04_22_230245) do
     t.text "text"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "tipus"
     t.integer "points", default: 0
     t.string "user"
     t.integer "user_id"
-    t.string "tipus"
   end
 
   create_table "replies", force: :cascade do |t|
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2021_04_22_230245) do
     t.integer "commentreply_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "parent_type"
   end
 
   create_table "users", force: :cascade do |t|

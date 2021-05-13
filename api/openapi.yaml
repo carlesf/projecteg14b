@@ -5,70 +5,70 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://100.25.0.237:8080'
+  - url: 'http://54.87.189.232:8080'
 paths:
   /contributions:
     get:
-        tags:
-        - contributions
-        summary: Retrieves all the Contributions of type url (ordered by points), of type ask (ordered by points), of type all (ordered by creation), created by one user or voted by one user
-        operationId: getContributions
-        parameters:
-        - name: type
-          in: query
-          description: Contribution type to filter
-          required: false
-          schema:
-            type: string
-            enum: [all, url, ask]
-        - name: user_id
-          in: query
-          description: Contribution user to filter
-          schema:
-            type: integer
-        - name: upvotedS
-          in: query
-          description: User to look for upvoted contributions
-          schema:
-            type: integer
-        responses:
-          200:
-            description: successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Contribution'
-          404:
-            description: 'Error: Not Found'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResult'
-                examples:
-                  errorUserExample:
-                    $ref: '#/components/examples/error404User'
-          401:
-            description: 'Error: Unauthorized'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResult'
-                examples:
-                  errorMissingAuthenticationExample:
-                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
-                  errorIncorrectAuthenticationExample:
-                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
-          403:
-            description: 'Error: Forbidden'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResult'
-                examples:
-                  errorPrivilegeNotGrantedExample:
-                    $ref: '#/components/examples/error403Forbidden'
+      tags:
+      - contributions
+      summary: Retrieves all the Contributions of type url (ordered by points), of type ask (ordered by points), of type all (ordered by creation), created by one User or voted by the logged in User
+      operationId: getContributions
+      parameters:
+      - name: type
+        in: query
+        description: Contribution type to filter
+        required: false
+        schema:
+          type: string
+          enum: [all, url, ask]
+      - name: user_id
+        in: query
+        description: Contribution user to filter
+        schema:
+          type: integer
+      - name: upvotedS
+        in: query
+        description: upvoted contributions of logged in User
+        schema:
+          type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contribution'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorUserExample:
+                  $ref: '#/components/examples/error404User'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorMissingAuthenticationExample:
+                  $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                errorIncorrectAuthenticationExample:
+                  $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorPrivilegeNotGrantedExample:
+                  $ref: '#/components/examples/error403Forbidden'
     post:
       tags:
       - contributions
@@ -319,7 +319,7 @@ paths:
     post:
       tags:
       - comments
-      summary: Adds a new Contribution Comment to the HackerNews
+      summary: Adds a new Comment to the HackerNews
       operationId: addComment
       requestBody:
         description: Provide the content of the new Comment and the id of the Contribution
@@ -384,8 +384,14 @@ paths:
       - replies
       summary: Adds a new Reply to the HackerNews
       operationId: addReply
+      parameters:
+      - name: r
+        in: query
+        description: indicates if the parent of the Reply is a Reply (1)
+        schema:
+          type: integer
       requestBody:
-        description: Provide the content of the new Reply and the id of the Comment
+        description: Provide the content of the new Reply and the id of the parent Comment/Reply
         content:
           application/json:
             schema:
@@ -417,9 +423,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorContentEmptyExample:
-                  $ref: '#/components/examples/error400ContentComment'
+                  $ref: '#/components/examples/error400ContentReply'
                 errorContributionIdEmptyExample:
-                  $ref: '#/components/examples/error400ContributionComment'
+                  $ref: '#/components/examples/error400CRReply'
         401:
             description: 'Error: Unauthorized'
             content:
@@ -439,9 +445,73 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error404Contribution'           
+                  $ref: '#/components/examples/error404CommentReply'           
                    
-                    
+  /votes:
+    post:
+      tags:
+      - votes
+      summary: Adds a Vote to a Contribution, a Comment or a Reply
+      operationId: vote
+      requestBody:
+        description: Provide the id of the object that is being voted, its type and the id of the voter
+        content:
+          application/json:
+            schema:
+              required:
+              - votable_id
+              - votable_type
+              - voter_id
+              type: object
+              properties:
+                votable_id:
+                  type: integer
+                  example: 17
+                votable_type:
+                  type: string
+                  example: 'contribution'
+                voter_id:
+                  type: integer
+                  example: 1                
+        required: true
+      responses:
+        201:
+          description: Vote created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vote'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorContentEmptyExample:
+                  $ref: '#/components/examples/error400ContentReply'
+                errorContributionIdEmptyExample:
+                  $ref: '#/components/examples/error400CRReply'
+        401:
+            description: 'Error: Unauthorized'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorMissingAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                  errorIncorrectAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404ContributionCommentReply'                  
   
   /tweets/{tweetId}:
     get:
@@ -588,6 +658,10 @@ components:
         user_id:
           type: integer
           example: 1
+        #comments:
+        #  type: array
+        #  items:
+        #    type: object
     User:
       type: object
       properties:
@@ -644,7 +718,22 @@ components:
         created_at:
           type: string
           format: date-time
-    
+        parent_type:
+          type: boolean
+    Vote:
+      type:  object
+      properties:
+        id: 
+          type: integer
+        votable_id:
+          type: integer
+        votable_type:
+          type: string
+        voter_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
     AddTweetResult:
       type: object
       properties:
@@ -690,6 +779,16 @@ components:
         status: 404
         error: "Not Found"
         message: "No Contribution with that contribution_id"
+    error404CommentReply:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No Comment or Reply with that commentreply_id"
+    error404ContributionCommentReply:
+      value:
+        status: 404
+        error: "Not Found"
+        message: "No Contribution, Comment or Reply with that votable_id"
     error409Contribution:
       value:
         status: 409
@@ -715,6 +814,16 @@ components:
         status: 400
         error: "Bad Request"
         message: "Contr_id cannot be empty"
+    error400ContentReply:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Content cannot be empty"
+    error400CRReply:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Commentreply_id cannot be empty"
   
   
     error400:

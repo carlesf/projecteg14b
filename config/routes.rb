@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   
   post '/replies' => 'replies#create'
   
-  
+  post '/votes' => 'votes#create'
   
   resources :votes
   

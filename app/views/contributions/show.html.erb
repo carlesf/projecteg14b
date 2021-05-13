@@ -252,7 +252,7 @@
                       <td>
                         <table class='reply-tree'>
                           <% iteration = 0 %>
-                          <% Reply.where(commentreply_id: comment.id).each do |reply| %>
+                          <% Reply.where(commentreply_id: comment.id, parent_type: false).each do |reply| %>
                             <% iteration += 1 %>
                             <tr class='athing comtr'>
                               <table border='0'>

@@ -62,29 +62,38 @@ class RepliesController < ApplicationController
         if !@apikey.nil? && User.where(uid: @apikey).empty?
           format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
         else
-          if Reply.where(id: params[:commentreply_id]).empty?
-            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Contribution with that contribution_id"}, :status => 404 }
+          if params[:r] && Reply.where(id: params[:commentreply_id]).empty? # parent -> reply
+            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Reply with that commentreply_id"}, :status => 404 }
+          elsif !params[:r] && Comment.where(id: params[:commentreply_id]).empty? # parent -> comment
+            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Comment with that commentreply_id"}, :status => 404 }
           else
             @reply
               if !current_user.nil?
-                @reply = Reply.new(comment_params)
+                @reply = Reply.new(reply_params)
                 @reply.user_id = current_user.id
-                @reply.commentreply_id = params[:commentreply_id]
               else
                 @user = User.find_by(uid: @apikey)
                 @reply = Reply.new
+                @reply.user_id = @user.id
                 @reply.content = params[:content]
                 @reply.commentreply_id = params[:commentreply_id]
-                @reply.user_id = @user.id
+                
               end
+              
+              if params[:r]
+                @reply.parent_type = true
+              else
+                @reply.parent_type = false
+              end
+              
             
               if @reply.save
                 if params[:r]
                   format.html { redirect_to '/contributions/'+params[:contr], notice: "Reply was successfully created." }
-                  format.json { render json: @reply.to_json(only: [:id, :content, :user_id, :commentreply_id, :created_at]), :status => 201 }
+                  format.json { render json: @reply.to_json(only: [:id, :content, :user_id, :commentreply_id, :parent_type, :created_at]), :status => 201 }
                 else
                   format.html { redirect_to Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id), notice: "Reply was successfully created." }
-                  format.json { render json: @reply.to_json(only: [:id, :content, :user_id, :commentreply_id, :created_at]), :status => 201 }
+                  format.json { render json: @reply.to_json(only: [:id, :content, :user_id, :commentreply_id, :parent_type, :created_at]), :status => 201 }
                 end
         
               else
@@ -97,6 +106,7 @@ class RepliesController < ApplicationController
                     format.json { render :json => {:status => 400, :error => "Bad Request", :message => "Content cannot be empty"}, :status => 400 }
                   end
                 elsif @reply.commentreply_id.blank?
+                  # aquest missatge no es veu
                   format.json { render :json => {:status => 400, :error => "Bad Request", :message => "commentreply_id cannot be empty"}, :status => 400 }
                 else
                   format.html { render :new, status: :unprocessable_entity }

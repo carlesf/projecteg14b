@@ -55,6 +55,7 @@ class CommentsController < ApplicationController
             @apikey = request.headers['X-API-KEY']
             if !User.where(uid: @apikey).empty?
               @user = User.find_by(uid: @apikey)
+              # aquest if? si upvotedC nomes li posem 1, sempre seran del logged in User
               if params[:upvotedC].to_s == @user.id.to_s
                 @votes = Vote.where(voter_id: @user.id, votable_type: 'comment').select(:votable_id)
                 @comments = Comment.where(id: @votes)
@@ -85,7 +86,7 @@ class CommentsController < ApplicationController
         end
         
       elsif params[:threads]
-        @comments = Comment.all
+        @comments = Comment.where(user_id: current_user.id)
         format.html { @comments }
       end
     end
