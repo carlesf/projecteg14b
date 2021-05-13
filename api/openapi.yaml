@@ -5,7 +5,7 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://3.235.7.145:8080'
+  - url: 'http://18.213.245.219:8080'
 paths:
   /contributions:
     get:
@@ -316,7 +316,68 @@ paths:
                 examples:
                   errorPrivilegeNotGrantedExample:
                     $ref: '#/components/examples/error403Forbidden'
-                    
+    post:
+      tags:
+      - comments
+      summary: Adds a new Contribution Comment to the HackerNews
+      operationId: addComment
+      requestBody:
+        description: Provide the content of the new Comment and the id of the Contribution
+        content:
+          application/json:
+            schema:
+              required:
+              - content
+              - contr_id
+              type: object
+              properties:
+                content:
+                  type: string
+                  minLength: 1
+                  example: 'Comment content'
+                contr_id:
+                  type: integer
+                  example: 1
+        required: true
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorContentEmptyExample:
+                  $ref: '#/components/examples/error400ContentComment'
+                errorContributionIdEmptyExample:
+                  $ref: '#/components/examples/error400ContributionComment'
+        401:
+            description: 'Error: Unauthorized'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorMissingAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                  errorIncorrectAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404Contribution'
+               
                     
   
   /tweets/{tweetId}:
@@ -562,6 +623,16 @@ components:
         status: 400
         error: "Bad Request"
         message: "URL must be valid"
+    error400ContentComment:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Content cannot be empty"
+    error400ContributionComment:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Contr_id cannot be empty"
   
   
     error400:

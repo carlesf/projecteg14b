@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy point unvote]
+  skip_before_action :verify_authenticity_token
   
   def point
     @comment.points += 1
@@ -66,6 +67,7 @@ class CommentsController < ApplicationController
             end
           else
             format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+            ## Cas extrem per l'API REST en que el user_id = 1 coincideix amb upvotedC = 1
             if !current_user.nil?
               @votes = Vote.where(voter_id: current_user.id, votable_type: 'comment').select(:votable_id)
               @comments = Comment.where(id: @votes)
@@ -74,6 +76,11 @@ class CommentsController < ApplicationController
           end
           
         else
+          if !current_user.nil?
+            @votes = Vote.where(voter_id: current_user.id, votable_type: 'comment').select(:votable_id)
+            @comments = Comment.where(id: @votes)
+            format.html { @comments }
+          end
           format.json { render :json => {:status => 404, :error => "Not Found", :message => "No user with that user_id"}, :status => 404 }
         end
         
@@ -100,22 +107,49 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    @comment = Comment.new(comment_params)
-    @comment.user_id = current_user.id
-    @comment.contr_id = params[:contr_id]
-
     respond_to do |format|
-      if @comment.save
-        format.html { redirect_to Contribution.find_by(id:  params[:contr_id]) , notice: "Comment was successfully created." }
-        format.json { render :show, status: :created, location: @comment }
-      else
-        if @comment.content.blank?
-          format.html { redirect_to Contribution.find_by(id: params[:contr_id]), alert: "Comment cannot be empty." }
+      if request.headers['X-API-KEY'] || !current_user.nil?
+        @apikey = request.headers['X-API-KEY']
+        if !@apikey.nil? && User.where(uid: @apikey).empty?
+          format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
         else
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @comment.errors, status: :unprocessable_entity }
+          if Contribution.where(id: params[:contr_id]).empty?
+            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Contribution with that contribution_id"}, :status => 404 }
+          else
+            @comment
+            if !current_user.nil?
+              @comment = Comment.new(comment_params)
+              @comment.user_id = current_user.id
+              @comment.contr_id = params[:contr_id]
+            else
+              @user = User.find_by(uid: @apikey)
+              @comment = Comment.new
+              @comment.content = params[:content]
+              @comment.contr_id = params[:contr_id]
+              @comment.user_id = @user.id
+            end
+            
+            if @comment.save
+              format.html { redirect_to Contribution.find_by(id:  params[:contr_id]) , notice: "Comment was successfully created." }
+              format.json { render json: @comment.to_json(only: [:id, :content, :user_id, :contr_id, :created_at]), :status => 201 }
+            else
+              if @comment.content.blank?
+                format.html { redirect_to Contribution.find_by(id: params[:contr_id]), alert: "Comment cannot be empty." }
+                format.json { render :json => {:status => 400, :error => "Bad Request", :message => "Content cannot be empty"}, :status => 400 }
+              elsif @comment.contr_id.blank?
+                format.json { render :json => {:status => 400, :error => "Bad Request", :message => "Contr_id cannot be empty"}, :status => 400 }
+              else # No existeix la contribució contr_id
+                format.html { render :new, status: :unprocessable_entity }
+                format.json { render json: @comment.errors, status: :unprocessable_entity }
+              end
+            end
+          end
         end
+        
+      else
+        format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
       end
+      
     end
   end
 

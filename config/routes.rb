@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   put '/users/:id' => 'users#update'
   
   get '/comments' => 'comments#index'
+  post '/comments' => 'comments#create'
   
   
   

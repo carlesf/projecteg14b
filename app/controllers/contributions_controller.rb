@@ -33,6 +33,7 @@ class ContributionsController < ApplicationController
             end
           else
             format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+            ## Cas extrem per l'API REST en que el user_id = 1 coincideix amb upvotedS = 1
             if !current_user.nil?
               @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
               @contributions = Contribution.where(id: @votes)
@@ -40,6 +41,11 @@ class ContributionsController < ApplicationController
             end
           end
         else
+          if !current_user.nil?
+            @votes = Vote.where(voter_id: current_user.id, votable_type: 'contribution').select(:votable_id)
+            @contributions = Contribution.where(id: @votes)
+            format.html { @contributions }
+          end
           format.json { render :json => {:status => 404, :error => "Not Found", :message => "No user with that user_id"}, :status => 404 }
         end
       elsif params[:type] == 'all'
