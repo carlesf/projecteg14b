@@ -1,5 +1,6 @@
 class RepliesController < ApplicationController
   before_action :set_reply, only: %i[ show edit update destroy point unvote]
+  skip_before_action :verify_authenticity_token
   
   def point
     Vote.create(votable_id: @reply.id, votable_type: 'reply', voter_id: current_user.id)
@@ -55,31 +56,57 @@ class RepliesController < ApplicationController
 
   # POST /replies or /replies.json
   def create
-    @reply = Reply.new(reply_params)
-    @reply.user_id = current_user.id
-    @reply.commentreply_id = params[:commentreply_id]
-
     respond_to do |format|
-      if @reply.save
-        if params[:r]
-          format.html { redirect_to '/contributions/'+params[:contr], notice: "Reply was successfully created." }
-          format.json { render :show, status: :created, location: @reply }
+      if request.headers['X-API-KEY'] || !current_user.nil?
+        @apikey = request.headers['X-API-KEY']
+        if !@apikey.nil? && User.where(uid: @apikey).empty?
+          format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
         else
-          format.html { redirect_to Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id), notice: "Reply was successfully created." }
-          format.json { render :show, status: :created, location: @reply }
-        end
-
-      else
-        if @reply.content.blank?
-          if params[:r]
-            format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id]+'&r=1&contr='+params[:contr], alert: "Reply cannot be empty." }
+          if Reply.where(id: params[:commentreply_id]).empty?
+            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Contribution with that contribution_id"}, :status => 404 }
           else
-            format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id], alert: "Reply cannot be empty." }
+            @reply
+              if !current_user.nil?
+                @reply = Reply.new(comment_params)
+                @reply.user_id = current_user.id
+                @reply.commentreply_id = params[:commentreply_id]
+              else
+                @user = User.find_by(uid: @apikey)
+                @reply = Reply.new
+                @reply.content = params[:content]
+                @reply.commentreply_id = params[:commentreply_id]
+                @reply.user_id = @user.id
+              end
+            
+              if @reply.save
+                if params[:r]
+                  format.html { redirect_to '/contributions/'+params[:contr], notice: "Reply was successfully created." }
+                  format.json { render json: @reply.to_json(only: [:id, :content, :user_id, :commentreply_id, :created_at]), :status => 201 }
+                else
+                  format.html { redirect_to Contribution.find_by(id: Comment.find_by(id: @reply.commentreply_id).contr_id), notice: "Reply was successfully created." }
+                  format.json { render json: @reply.to_json(only: [:id, :content, :user_id, :commentreply_id, :created_at]), :status => 201 }
+                end
+        
+              else
+                if @reply.content.blank?
+                  if params[:r]
+                    format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id]+'&r=1&contr='+params[:contr], alert: "Reply cannot be empty." }
+                    format.json { render :json => {:status => 400, :error => "Bad Request", :message => "Content cannot be empty"}, :status => 400 }
+                  else
+                    format.html { redirect_to '/replies/new?commentreply_id='+params[:commentreply_id], alert: "Reply cannot be empty." }
+                    format.json { render :json => {:status => 400, :error => "Bad Request", :message => "Content cannot be empty"}, :status => 400 }
+                  end
+                elsif @reply.commentreply_id.blank?
+                  format.json { render :json => {:status => 400, :error => "Bad Request", :message => "commentreply_id cannot be empty"}, :status => 400 }
+                else
+                  format.html { render :new, status: :unprocessable_entity }
+                  format.json { render json: @reply.errors, status: :unprocessable_entity }
+                end
+              end
           end
-        else
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @reply.errors, status: :unprocessable_entity }
         end
+      else
+      format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
       end
     end
   end
