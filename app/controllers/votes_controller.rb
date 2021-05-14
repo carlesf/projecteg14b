@@ -82,114 +82,6 @@ class VotesController < ApplicationController
       
     end
   end
-    
-    
-    
-    
-    
-    
-    
-    
-=begin   
-    
-    respond_to do |format|
-
-      if request.headers['X-API-KEY'] || !current_user.nil?
-        @apikey = request.headers['X-API-KEY']
-        if !@apikey.nil? && User.where(uid: @apikey).empty?
-          format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
-        else
-
-          # -------------- NO FUNCIONA --------------
-          if params[:votable_type]=='contribution' && Contribution.where(id: params[:votable_id]).empty? 
-            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Contribution with that votable_id"}, :status => 404 }
-          elsif params[:votable_type]=='comment' && Comment.where(id: params[:votable_id]).empty? 
-            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Comment with that votable_id"}, :status => 404 }
-          elsif params[:votable_type]=='reply' && Reply.where(id: params[:votable_id]).empty? 
-            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Reply with that votable_id"}, :status => 404 }
-          # ------------------------------------------
-
-          else
-            
-            if !current_user.nil?
-              @user = User.find_by(id: current_user.id)
-              if Vote.where(votable_id: params[:votable_id], votable_type: params[:votable_type], voter_id: @user.id)
-                format.json { render :json => {:status => 409, :error => "Conflict", :message => "Vote already exists"}, :status => 409 }
-              end        
-            else
-              @user = User.find_by(uid: @apikey)
-              if Vote.where(votable_id: params[:votable_id], votable_type: params[:votable_type], voter_id: @user.id)
-                format.json { render :json => {:status => 409, :error => "Conflict", :message => "Vote already exists"}, :status => 409 }
-              end          
-            end
-            
-            @vote
-            if !current_user.nil? 
-              @user = User.find_by(id: current_user.id)
-              @vote = Vote.new(vote_params)
-              @vote.voter_id = @user.id
-            else
-              @user = User.find_by(uid: @apikey)
-              @vote = Vote.new
-              @vote.votable_id = params[:votable_id]
-              @vote.votable_type = params[:votable_type]
-              @vote.voter_id = @user.id
-
-  
-              # ------------- NO FUNCIONA -----------------
-              if params[:votable_type]=='contribution' 
-                Contribution.find_by(id: params[:votable_id]).point
-              elsif params[:votable_type]=='comment' 
-                Comment.find_by(id: params[:votable_id]).point
-              else # reply
-                Reply.find_by(id: params[:votable_id]).point
-              end
-=end           
-=begin
-            end
-  
-          end
-          
-          if @vote.save
-            format.html { redirect_to @vote, notice: 'Vote was successfully created.' }
-            format.json { render json: @vote.to_json(only: [:votable_id, :votable_type, :voter_id, :created_at]), :status => 201 }
-          else
-            format.html { render :new }
-            format.json { render json: @vote.errors, status: :unprocessable_entity }
-            if @vote.votable_id.blank?
-              format.json { render :json => {:status => 400, :error => "Bad Request", :message => "votable_id cannot be empty"}, :status => 400 }
-            elsif @vote.votable_type.blank?
-              format.json { render :json => {:status => 400, :error => "Bad Request", :message => "votable_type cannot be empty"}, :status => 400 }
-            elsif @vote.voter_id.blank?
-              format.json { render :json => {:status => 400, :error => "Bad Request", :message => "voter_id cannot be empty"}, :status => 400 }
-            else
-              format.json { render json: @reply.errors, status: :unprocessable_entity }
-            end
-          end
-          
-        end
-      else
-        format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
-      end
-    end
-=end
-    
-=begin    
-    ------------------
-    @vote = Vote.new(vote_params)
-
-    respond_to do |format|
-      if @vote.save
-        format.html { redirect_to @vote, notice: 'Vote was successfully created.' }
-        format.json { render json: @vote.to_json(only: [:votable_id, :votable_type, :voter_id, :created_at]), :status => 201 }
-
-      else
-        format.html { render :new }
-        format.json { render json: @vote.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-=end
   
 
   # PATCH/PUT /votes/1
@@ -209,11 +101,43 @@ class VotesController < ApplicationController
   # DELETE /votes/1
   # DELETE /votes/1.json
   def destroy
-    @vote.destroy
     respond_to do |format|
-      format.html { redirect_to votes_url, notice: 'Vote was successfully destroyed.' }
-      format.json { head :no_content }
+      if request.headers['X-API-KEY'] || !current_user.nil?
+        @apikey = request.headers['X-API-KEY']
+        if !@apikey.nil? && User.where(uid: @apikey).empty?
+          format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Incorrect authentication"}, :status => 401 }
+        else
+          @user = User.find_by(uid: @apikey)
+          if !@apikey.nil? && Vote.where(id: params[:id]).empty?
+            format.json { render :json => {:status => 404, :error => "Not Found", :message => "No Vote with that vote_id"}, :status => 404 }
+          elsif !@apikey.nil? && !(Vote.find(params[:id]).voter_id.to_s == @user.id.to_s)
+            format.json { render :json => {:status => 403, :error => "Forbidden", :message => "Privilege not granted"}, :status => 403 }
+          else
+            if !@apikey.nil?
+              if @vote.votable_type.to_s == "contribution"
+                @contribution = Contribution.find(@vote.votable_id)
+                @contribution.points -= 1
+                @contribution.save
+              elsif @vote.votable_type.to_s == "comment"
+                @comment = Comment.find(@vote.votable_id)
+                @comment.points -= 1
+                @comment.save
+              end
+            end
+            @vote.destroy
+            format.html { redirect_to votes_url, notice: 'Vote was successfully destroyed.' }
+            format.json { head :no_content, :status => 204 }
+          
+          end
+          
+        end
+        
+      else
+        format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+      end
+      
     end
+    
   end
 
   private

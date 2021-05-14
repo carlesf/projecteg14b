@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+      <th>ID</th>
       <th>Votable</th>
       <th>Votable type</th>
       <th>Voter</th>
@@ -15,6 +16,7 @@
   <tbody>
     <% @votes.each do |vote| %>
       <tr>
+        <td><%= vote.id %></td>
         <td><%= vote.votable_id %></td>
         <td><%= vote.votable_type %></td>
         <td><%= vote.voter_id %></td>

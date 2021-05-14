@@ -2,10 +2,10 @@ openapi: 3.0.1
 info:
   version: 1.0.0
   title: Hacker News (ProjecteG14B)
-  description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
+  description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>All operations are executable. Some operations require authentication. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created your user in the HackerNews Web App."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://34.201.47.243:8080'
+  - url: 'http://ip-pública-AWSCloud9:8080'
 paths:
   /contributions:
     get:
@@ -137,7 +137,6 @@ paths:
                 examples:
                   errorURLExistenceExample:
                     $ref: '#/components/examples/error409Contribution'
-                    
   /contributions/{contributionId}:
     get:
       tags:
@@ -167,7 +166,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404Contribution'
-                  
   /users/{userId}:
     get:
       tags:
@@ -294,8 +292,6 @@ paths:
                 examples:
                   errorUserExample:
                     $ref: '#/components/examples/error404User'
-                    
-                    
           401:
             description: 'Error: Unauthorized'
             content:
@@ -377,7 +373,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404Contribution'
-                  
   /replies:
     post:
       tags:
@@ -447,7 +442,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404CommentReply'           
-                   
   /votes:
     post:
       tags:
@@ -521,106 +515,44 @@ paths:
                 examples:
                   errorVoteAlreadyDoneExample:
                     $ref: '#/components/examples/error409Vote'
-  
-  /tweets/{tweetId}:
-    get:
-      tags:
-      - tweets
-      summary: Finds a Tweet by its ID
-      description: Returns a single Tweet
-      operationId: getTweetById
-      parameters:
-      - name: tweetId
-        in: path
-        description: ID of Tweet to return
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contribution'
-        404:
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error404'
+  /votes/{voteId}:
     delete:
       tags:
-      - tweets
-      summary: Deletes a Tweet
-      operationId: deleteTweet
+      - votes
+      summary: Deletes a Vote
+      operationId: deleteVote
       parameters:
-      - name: tweetId
-        in: path
-        description: Tweet id to delete
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: voteId
+          in: path
+          description: id of the Vote to delete
+          required: true
+          schema:
+            type: integer
       responses:
         204:
           description: Tweet deleted
           content:
             application/json: {}
-        404:
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error404'
         401:
-          description: 'Error: Unauthorized'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error401'
+            description: 'Error: Unauthorized'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorMissingAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedMissingAuthentication'
+                  errorIncorrectAuthenticationExample:
+                    $ref: '#/components/examples/error401UnauthorizedIncorrectAuthentication'
         403:
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error403'
-      security:
-      - ApiKeyAuth: []
-  /tweets/{tweetId}/likes:
-    post:
-      tags:
-      - tweets
-      summary: Likes a Tweet
-      operationId: likeTweet
-      parameters:
-      - name: tweetId
-        in: path
-        description: Tweet id to like
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: Liked Tweet
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contribution'
+            description: 'Error: Forbidden'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorPrivilegeNotGrantedExample:
+                    $ref: '#/components/examples/error403Forbidden'            
         404:
           description: 'Error: Not Found'
           content:
@@ -629,7 +561,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error404'
+                  $ref: '#/components/examples/error404Vote'
 components:
   schemas:
     Contribution:
@@ -667,10 +599,6 @@ components:
         user_id:
           type: integer
           example: 1
-        #comments:
-        #  type: array
-        #  items:
-        #    type: object
     User:
       type: object
       properties:
@@ -747,14 +675,6 @@ components:
         created_at:
           type: string
           format: date-time
-    AddTweetResult:
-      type: object
-      properties:
-        new_tweet:
-          $ref: '#/components/schemas/Contribution'
-        api_key:
-          type: string
-          example: "MjAyMC0wNC0xOCAxMjoyODo0MSBVVEM=\n"
     ErrorResult:
       type: object
       properties:
@@ -857,28 +777,11 @@ components:
         status: 409
         error: "Conflict"
         message: "Trying to vote a Contribution, Comment or Reply twice"
-  
-  
-    error400:
-      value:
-        status: 400
-        error: "Bad Request"
-        message: "Content is too long (maximum is 280 characters)"
-    error401:
-      value:
-        status: 401
-        error: "Unauthorized"
-        message: "You provided no api key (X-API-KEY Header)"
-    error403:
-      value:
-        status: 403
-        error: "Forbidden"
-        message: "Your api key (X-API-KEY Header) is not valid"
-    error404:
+    error404Vote:
       value:
         status: 404
         error: "Not Found"
-        message: "No Tweet with that ID"
+        message: "No Vote with that vote_id"
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

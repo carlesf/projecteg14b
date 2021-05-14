@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   post '/replies' => 'replies#create'
   
   post '/votes' => 'votes#create'
+  delete '/votes/:id' => 'votes#destroy'
   
   resources :votes
   
