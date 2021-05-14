@@ -5,7 +5,7 @@ info:
   description: "This is the Open API documentation for the REST API of our beloved application **Hacker News** deployed at <https://hackernews-projecteg14b.herokuapp.com/>. <br>¡ATENCIÓN, ESTÁ PENDIENTE! All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the api_key vaule you got when you created the tweet."
 servers:
   - url: 'https://hackernews-projecteg14b.herokuapp.com/'
-  - url: 'http://54.87.189.232:8080'
+  - url: 'http://34.201.47.243:8080'
 paths:
   /contributions:
     get:
@@ -387,9 +387,10 @@ paths:
       parameters:
       - name: r
         in: query
-        description: indicates if the parent of the Reply is a Reply (1)
+        description: indicates if the parent of the Reply is a Reply
         schema:
           type: integer
+          enum: [1]
       requestBody:
         description: Provide the content of the new Reply and the id of the parent Comment/Reply
         content:
@@ -406,7 +407,7 @@ paths:
                   example: 'Reply content'
                 commentreply_id:
                   type: integer
-                  example: 1
+                  example: "1"
         required: true
       responses:
         201:
@@ -454,14 +455,13 @@ paths:
       summary: Adds a Vote to a Contribution, a Comment or a Reply
       operationId: vote
       requestBody:
-        description: Provide the id of the object that is being voted, its type and the id of the voter
+        description: Provide the id of the object that is being voted and its type (Contribution, Comment or Reply)
         content:
           application/json:
             schema:
               required:
               - votable_id
               - votable_type
-              - voter_id
               type: object
               properties:
                 votable_id:
@@ -469,10 +469,8 @@ paths:
                   example: 17
                 votable_type:
                   type: string
+                  enum: [contribution, comment, reply]
                   example: 'contribution'
-                voter_id:
-                  type: integer
-                  example: 1                
         required: true
       responses:
         201:
@@ -488,10 +486,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
-                errorContentEmptyExample:
-                  $ref: '#/components/examples/error400ContentReply'
-                errorContributionIdEmptyExample:
-                  $ref: '#/components/examples/error400CRReply'
+                errorVotableEmptyExample:
+                  $ref: '#/components/examples/error400EmptyVotableVote'
+                errorTypeEmptyExample:
+                  $ref: '#/components/examples/error400EmptyTypeVote'
+                errorTypeIncorrectExample:
+                  $ref: '#/components/examples/error400IncorrectTypeVote'
         401:
             description: 'Error: Unauthorized'
             content:
@@ -511,7 +511,16 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error404ContributionCommentReply'                  
+                  $ref: '#/components/examples/error404ContributionCommentReply' 
+        409:
+            description: 'Error: Conflict'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResult'
+                examples:
+                  errorVoteAlreadyDoneExample:
+                    $ref: '#/components/examples/error409Vote'
   
   /tweets/{tweetId}:
     get:
@@ -725,12 +734,16 @@ components:
       properties:
         id: 
           type: integer
+          example: 1
         votable_id:
           type: integer
+          example: 2
         votable_type:
           type: string
+          example: 'contribution'
         voter_id:
           type: integer
+          example: 3
         created_at:
           type: string
           format: date-time
@@ -824,6 +837,26 @@ components:
         status: 400
         error: "Bad Request"
         message: "Commentreply_id cannot be empty"
+    error400EmptyVotableVote:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Votable_id cannot be empty"
+    error400EmptyTypeVote:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Votable_type cannot be empty"
+    error400IncorrectTypeVote:
+      value:
+        status: 400
+        error: "Bad Request"
+        message: "Votable_type must be contribution, comment or reply"
+    error409Vote:
+      value:
+        status: 409
+        error: "Conflict"
+        message: "Trying to vote a Contribution, Comment or Reply twice"
   
   
     error400:

@@ -71,6 +71,7 @@ class RepliesController < ApplicationController
               if !current_user.nil?
                 @reply = Reply.new(reply_params)
                 @reply.user_id = current_user.id
+                @reply.commentreply_id = params[:commentreply_id]
               else
                 @user = User.find_by(uid: @apikey)
                 @reply = Reply.new
@@ -106,7 +107,6 @@ class RepliesController < ApplicationController
                     format.json { render :json => {:status => 400, :error => "Bad Request", :message => "Content cannot be empty"}, :status => 400 }
                   end
                 elsif @reply.commentreply_id.blank?
-                  # aquest missatge no es veu
                   format.json { render :json => {:status => 400, :error => "Bad Request", :message => "commentreply_id cannot be empty"}, :status => 400 }
                 else
                   format.html { render :new, status: :unprocessable_entity }
@@ -116,7 +116,7 @@ class RepliesController < ApplicationController
           end
         end
       else
-      format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
+        format.json { render :json => {:status => 401, :error => "Unauthorized", :message => "Missing authentication"}, :status => 401 }
       end
     end
   end

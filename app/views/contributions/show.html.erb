@@ -68,7 +68,7 @@
                     <center>
                       <% if logged_in? %>
                         
-                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: @contribution.id).nil?) %>
+                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: @contribution.id, votable_type: "contribution").nil?) %>
                           <b style='color:#ff6600;'>
                            *
                           </b>
@@ -193,7 +193,7 @@
                         <center>
                           <% if logged_in? %>
                           
-                            <% if !(Vote.find_by(voter_id: current_user.id, votable_id: comment.id).nil?) %>
+                            <% if !(Vote.find_by(voter_id: current_user.id, votable_id: comment.id, votable_type: "comment").nil?) %>
                               <b style='color:#ff6600;'>
                                *
                               </b>
@@ -262,7 +262,7 @@
                                     <center>
                                       <% if logged_in? %>
                                       
-                                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: reply.id).nil?) %>
+                                        <% if !(Vote.find_by(voter_id: current_user.id, votable_id: reply.id, votable_type: "reply").nil?) %>
                                           <b style='color:#ff6600;'>
                                            *
                                           </b>
