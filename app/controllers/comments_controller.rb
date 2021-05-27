@@ -47,7 +47,7 @@ class CommentsController < ApplicationController
         else
           @comments = Comment.where(user_id: params[:user_id]).order(created_at: :desc)
           format.html { @comments }
-          format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at]) }
+          format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at, :points]) }
         end
       elsif params[:upvotedC]
         if !User.where(id: params[:upvotedC]).empty?
@@ -59,7 +59,7 @@ class CommentsController < ApplicationController
               if params[:upvotedC].to_s == @user.id.to_s
                 @votes = Vote.where(voter_id: @user.id, votable_type: 'comment').select(:votable_id)
                 @comments = Comment.where(id: @votes)
-                format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at]) }
+                format.json { render json: @comments.to_json(only: [:id, :content, :user_id, :contr_id, :created_at, :points]) }
               else
                 format.json { render :json => {:status => 403, :error => "Forbidden", :message => "Privilege not granted"}, :status => 403 }
               end
@@ -85,8 +85,10 @@ class CommentsController < ApplicationController
           format.json { render :json => {:status => 404, :error => "Not Found", :message => "No user with that user_id"}, :status => 404 }
         end
         
-      elsif params[:threads]
-        @comments = Comment.where(user_id: current_user.id)
+      elsif params[:threads] 
+        if !current_user.nil?
+          @comments = Comment.where(user_id: current_user.id)
+        end
         format.html { @comments }
       end
     end
@@ -132,7 +134,7 @@ class CommentsController < ApplicationController
             
             if @comment.save
               format.html { redirect_to Contribution.find_by(id:  params[:contr_id]) , notice: "Comment was successfully created." }
-              format.json { render json: @comment.to_json(only: [:id, :content, :user_id, :contr_id, :created_at]), :status => 201 }
+              format.json { render json: @comment.to_json(only: [:id, :content, :user_id, :contr_id, :created_at, :points]), :status => 201 }
             else
               if @comment.content.blank?
                 format.html { redirect_to Contribution.find_by(id: params[:contr_id]), alert: "Comment cannot be empty." }

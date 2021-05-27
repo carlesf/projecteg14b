@@ -27,10 +27,10 @@ ActiveRecord::Schema.define(version: 2021_05_13_135611) do
     t.text "text"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "tipus"
     t.integer "points", default: 0
     t.string "user"
     t.integer "user_id"
+    t.string "tipus"
   end
 
   create_table "replies", force: :cascade do |t|
